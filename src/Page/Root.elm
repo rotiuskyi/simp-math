@@ -1,4 +1,4 @@
-module Root exposing (view)
+module Page.Root exposing (view)
 
 import Html exposing (Html, div, text)
 

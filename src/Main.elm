@@ -5,8 +5,8 @@ import Browser.Navigation exposing (Key, load, pushUrl)
 import Html exposing (Html, a, div, h5, li, text, ul)
 import Html.Attributes exposing (class, href)
 import Location
-import NotFound
-import Root
+import Page.NotFound as NotFound
+import Page.Root as Root
 import Url exposing (Url)
 
 
