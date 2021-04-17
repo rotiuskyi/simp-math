@@ -5,10 +5,8 @@ import Browser.Navigation exposing (Key, load, pushUrl)
 import Html exposing (Html, a, div, h5, li, text, ul)
 import Html.Attributes exposing (class, href)
 import Location
-import Login
 import NotFound
 import Root
-import RoutePath exposing (RoutePath(..))
 import Url exposing (Url)
 
 
@@ -29,15 +27,11 @@ view model =
             container content =
                 div [ class "container" ] [ content ]
         in
-        case RoutePath.fromString model.url.path of
-            RoutePath.Root ->
-                [ header, Root.view |> container ]
+        if model.url.path == Location.paths.root then
+            [ header, container Root.view ]
 
-            RoutePath.Login ->
-                [ Login.view model |> container ]
-
-            _ ->
-                [ NotFound.view |> container ]
+        else
+            [ container NotFound.view ]
     }
 
 
@@ -47,8 +41,7 @@ header =
         [ div [ class "container smc-header__content" ]
             [ h5 [ class "smc-header__title" ] [ text "My App" ]
             , ul [ class "smc-header-nav" ]
-                [ li [ class "smc-header-nav__item" ] [ a [ RoutePath.toString RoutePath.Login |> href ] [ text "Login" ] ]
-                , li [ class "smc-header-nav__item" ] [ a [ RoutePath.toString RoutePath.Root |> href ] [ text "Root" ] ]
+                [ li [ class "smc-header-nav__item" ] [ a [ href Location.paths.root ] [ text "Root" ] ]
                 , li [ class "smc-header-nav__item smc-header-nav__item--no-margin" ] [ a [ href "/foo" ] [ text "foo" ] ]
                 ]
             ]
@@ -58,7 +51,6 @@ header =
 type Msg
     = ChangedUrl Url
     | ClickedLink UrlRequest
-    | GotLoginMsg Login.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -76,9 +68,6 @@ update msg model =
 
                 Browser.External href ->
                     ( model, load href )
-
-        GotLoginMsg loginMsg ->
-            ( model, Cmd.none )
 
 
 subscriptions : Model -> Sub Msg
