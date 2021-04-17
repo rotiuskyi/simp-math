@@ -1,0 +1,45 @@
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.smc-header {
+  display: flex;
+  align-items: center;
+  height: 70px;
+  background-color: darkslategrey;
+}
+
+.smc-header .smc-header__content {
+  display: flex;
+  justify-content: space-between;
+}
+
+.smc-header .smc-header__title {
+  color: white;
+}
+
+ul.smc-header-nav {
+  display: flex;
+}
+
+ul.smc-header-nav li.smc-header-nav__item {
+  margin-right: 20px;
+}
+
+ul.smc-header-nav li.smc-header-nav__item--no-margin {
+  margin: 0;
+}
+
+ul.smc-header-nav li.smc-header-nav__item a {
+  color: azure;
+}
+
+ul.smc-header-nav li.smc-header-nav__item a:hover {
+  color: aqua;
+}
