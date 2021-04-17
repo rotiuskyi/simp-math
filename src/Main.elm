@@ -25,19 +25,19 @@ view : Model -> Document Msg
 view model =
     { title = "Simple Math"
     , body =
-        [ header
-        , div [ class "container" ]
-            [ case RoutePath.fromString model.url.path of
-                RoutePath.Root ->
-                    Root.view
+        let
+            container content =
+                div [ class "container" ] [ content ]
+        in
+        case RoutePath.fromString model.url.path of
+            RoutePath.Root ->
+                [ header, Root.view |> container ]
 
-                RoutePath.Login ->
-                    Login.view model
+            RoutePath.Login ->
+                [ Login.view model |> container ]
 
-                _ ->
-                    NotFound.view
-            ]
-        ]
+            _ ->
+                [ NotFound.view |> container ]
     }
 
 
