@@ -6,17 +6,11 @@ import Bootstrap.Form.Select as Select
 import Bootstrap.Grid as Grid
 import Bootstrap.Grid.Col as Col
 import Bootstrap.Grid.Row as Row
+import Const.Operation as Operation
 import Html exposing (Html, label, li, text, ul)
 import Html.Attributes exposing (value)
 import Html.Events exposing (onSubmit)
 import Random
-
-
-type Operation
-    = Addition
-    | Subtraction
-    | Multiplication
-    | Division
 
 
 type alias RootPgModel =
@@ -28,7 +22,7 @@ type alias RootPgModel =
 init : RootPgModel
 init =
     { randomPairs = []
-    , operation = "Addition"
+    , operation = Operation.addition
     }
 
 
@@ -70,10 +64,10 @@ view model =
                         [ Form.col [ Col.xsAuto ]
                             [ label []
                                 [ Select.select [ Select.onChange SelectOperation ]
-                                    [ Select.item [ value "Addition" ] [ text "Addition" ]
-                                    , Select.item [ value "Subtraction" ] [ text "Subtraction" ]
-                                    , Select.item [ value "Multiplication" ] [ text "Multiplication" ]
-                                    , Select.item [ value "Division" ] [ text "Division" ]
+                                    [ Select.item [ value Operation.addition ] [ text Operation.addition ]
+                                    , Select.item [ value Operation.subtraction ] [ text Operation.subtraction ]
+                                    , Select.item [ value Operation.multiplication ] [ text Operation.multiplication ]
+                                    , Select.item [ value Operation.subtraction ] [ text Operation.subtraction ]
                                     ]
                                 ]
                             ]

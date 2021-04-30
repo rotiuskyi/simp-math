@@ -1,8 +1,8 @@
 module Main exposing (main)
 
-import AppPath exposing (appPath)
 import Browser exposing (Document, UrlRequest, application)
 import Browser.Navigation exposing (Key, load, pushUrl)
+import Const.AppPath as AppPath
 import Page.NotFound
 import Page.Root
 import Shell
@@ -53,7 +53,7 @@ view : Model -> Document Msg
 view model =
     let
         container pathname =
-            if pathname == appPath.root then
+            if pathname == AppPath.root then
                 [ Shell.view GotRootPgMsg <| Page.Root.view model.rootModel ]
 
             else
