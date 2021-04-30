@@ -3,6 +3,7 @@ module Main exposing (main)
 import Browser exposing (Document, UrlRequest, application)
 import Browser.Navigation exposing (Key, load, pushUrl)
 import Const.AppPath as AppPath
+import Html.Attributes exposing (href)
 import Page.NotFound
 import Page.Root
 import Shell
@@ -11,13 +12,15 @@ import Url exposing (Url)
 
 type alias Model =
     { currUrl : Url
+    , navKey : Key
     , rootModel : Page.Root.RootPgModel
     }
 
 
 init : () -> Url -> Key -> ( Model, Cmd Msg )
-init _ url _ =
+init _ url key =
     ( { currUrl = url
+      , navKey = key
       , rootModel = Page.Root.init
       }
     , Cmd.none
@@ -33,15 +36,23 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        ChangedUrl url ->
+            ( { model | currUrl = url }, Cmd.none )
+
+        ClickedLink urlRequest ->
+            case urlRequest of
+                Browser.Internal url ->
+                    ( model, pushUrl model.navKey <| Url.toString url )
+
+                Browser.External href ->
+                    ( model, load href )
+
         GotRootPgMsg subMsg ->
             let
                 ( newRootModel, cmd ) =
                     Page.Root.update subMsg model.rootModel
             in
             ( { model | rootModel = newRootModel }, Cmd.map GotRootPgMsg cmd )
-
-        _ ->
-            ( model, Cmd.none )
 
 
 subscriptions : Model -> Sub Msg
