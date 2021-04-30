@@ -44,3 +44,9 @@ ul.smc-header-nav li.smc-header-nav__item a {
 ul.smc-header-nav li.smc-header-nav__item a:hover {
   color: aqua;
 }
+
+.smc-input {}
+
+.smc-input--text-center {
+  text-align: center;
+}
