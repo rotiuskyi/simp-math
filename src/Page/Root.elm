@@ -11,24 +11,25 @@ import Html exposing (Html, label, li, text, ul)
 import Html.Attributes exposing (value)
 import Html.Events exposing (onSubmit)
 import Random
+import Set
 
 
 type alias RootPgModel =
     { randomPairs : List ( Int, Int )
-    , operation : String
+    , pairOperation : String
     }
 
 
 init : RootPgModel
 init =
     { randomPairs = []
-    , operation = Operation.addition
+    , pairOperation = Operation.addition
     }
 
 
 type RootPgMsg
-    = GenerateRandomPairs
-    | GeneratedRandomPairs (List ( Int, Int ))
+    = GeneratePairs
+    | GeneratedPairs (List ( Int, Int ))
     | SelectOperation String
 
 
@@ -38,20 +39,25 @@ generatePairs =
         randNum =
             Random.int 1 9
     in
-    Random.generate GeneratedRandomPairs <| Random.list 10 <| Random.pair randNum randNum
+    Random.generate GeneratedPairs <| Random.list 10 <| Random.pair randNum randNum
+
+
+filterUniquePairs : List ( Int, Int ) -> List ( Int, Int )
+filterUniquePairs pairs =
+    List.foldl (\pair set -> Set.insert pair set) Set.empty pairs |> Set.toList
 
 
 update : RootPgMsg -> RootPgModel -> ( RootPgModel, Cmd RootPgMsg )
 update msg model =
     case msg of
-        GenerateRandomPairs ->
+        GeneratePairs ->
             ( model, generatePairs )
 
-        GeneratedRandomPairs pairs ->
-            ( { model | randomPairs = pairs }, Cmd.none )
+        GeneratedPairs pairs ->
+            ( { model | randomPairs = filterUniquePairs pairs }, Cmd.none )
 
         SelectOperation operation ->
-            ( { model | operation = operation }, Cmd.none )
+            ( { model | pairOperation = operation }, Cmd.none )
 
 
 view : RootPgModel -> Html RootPgMsg
@@ -59,7 +65,7 @@ view model =
     Grid.container []
         [ Grid.row [ Row.centerXs ]
             [ Grid.col [ Col.xsAuto ]
-                [ Form.form [ onSubmit GenerateRandomPairs ]
+                [ Form.form [ onSubmit GeneratePairs ]
                     [ Form.row []
                         [ Form.col [ Col.xsAuto ]
                             [ label []
@@ -80,7 +86,7 @@ view model =
             ]
         , Grid.row [ Row.centerXs ]
             [ Grid.col [ Col.xsAuto ]
-                [ text model.operation
+                [ text model.pairOperation
                 , model.randomPairs
                     |> List.map (\( n0, n1 ) -> li [] [ text <| String.fromInt n0 ++ "-" ++ String.fromInt n1 ])
                     |> ul []
