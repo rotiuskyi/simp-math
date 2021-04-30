@@ -9,7 +9,7 @@ header : Html msg
 header =
     div [ class "smc-header" ]
         [ div [ class "container smc-header__content" ]
-            [ h5 [ class "smc-header__title" ] [ text "My App" ]
+            [ h5 [ class "smc-header__title" ] [ text "Simple Math" ]
             , ul [ class "smc-header-nav" ]
                 [ li [ class "smc-header-nav__item" ] [ a [ href appPath.root ] [ text "Root" ] ]
                 , li [ class "smc-header-nav__item smc-header-nav__item--no-margin" ] [ a [ href "/foo" ] [ text "foo" ] ]

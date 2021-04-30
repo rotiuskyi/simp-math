@@ -11,6 +11,7 @@ ul {
 .smc-header {
   display: flex;
   align-items: center;
+  margin-bottom: 16px;
   height: 70px;
   background-color: darkslategrey;
 }
