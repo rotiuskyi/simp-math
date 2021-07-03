@@ -1,8 +1,8 @@
 module Main exposing (main)
 
+import AppPath as AppPath
 import Browser exposing (Document, UrlRequest, application)
 import Browser.Navigation exposing (Key, load, pushUrl)
-import Const.AppPath as AppPath
 import Html.Attributes exposing (href)
 import Page.NotFound
 import Page.Root

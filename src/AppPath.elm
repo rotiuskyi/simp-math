@@ -1,4 +1,4 @@
-module Const.AppPath exposing (..)
+module AppPath exposing (..)
 
 
 notFound : String

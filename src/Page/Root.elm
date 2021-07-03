@@ -7,95 +7,64 @@ import Bootstrap.Form.Select as Select
 import Bootstrap.Grid as Grid
 import Bootstrap.Grid.Col as Col
 import Bootstrap.Grid.Row as Row
-import Const.Operation as Operation
+import Dict
+import Expression.Expression exposing (Expression, displayValue)
+import Expression.Operation as Operation
 import Html exposing (Html, label, li, text, ul)
-import Html.Attributes exposing (class, disabled, value)
+import Html.Attributes exposing (class, disabled, type_, value)
 import Html.Events exposing (onSubmit)
 import Random
-import Set
 
 
 type alias RootPgModel =
-    { randomPairs : List ( Int, Int )
-    , pairOperation : String
-    , currPair : Maybe ( Int, Int )
+    { operation : String
+    , expressions : List Expression
+    , currExpression : Maybe Expression
     }
 
 
 init : RootPgModel
 init =
-    { randomPairs = []
-    , pairOperation = Operation.addition
-    , currPair = Nothing
+    { operation = Operation.addition
+    , expressions = []
+    , currExpression = Nothing
     }
 
 
 type RootPgMsg
-    = GeneratePairs
-    | GeneratedPairs (List ( Int, Int ))
+    = GenerateExpressions
+    | NewExpressions (List Expression)
     | SelectOperation String
     | TypedText String
-
-
-generatePairs : Cmd RootPgMsg
-generatePairs =
-    let
-        randNum =
-            Random.int 1 5
-    in
-    Random.generate GeneratedPairs <| Random.list 10 <| Random.pair randNum randNum
-
-
-filterUniquePairs : List ( Int, Int ) -> List ( Int, Int )
-filterUniquePairs pairs =
-    List.foldl (\pair set -> Set.insert pair set) Set.empty pairs |> Set.toList
 
 
 update : RootPgMsg -> RootPgModel -> ( RootPgModel, Cmd RootPgMsg )
 update msg model =
     case msg of
-        GeneratePairs ->
-            ( model, generatePairs )
+        GenerateExpressions ->
+            ( model, generateExpressions )
 
-        GeneratedPairs pairs ->
-            let
-                uniquePairs =
-                    filterUniquePairs pairs
-
-                newCurrPair =
-                    List.head uniquePairs
-            in
-            ( { model | randomPairs = uniquePairs, currPair = newCurrPair }, Cmd.none )
+        NewExpressions exps ->
+            ( { model | expressions = exps, currExpression = List.head exps }, Cmd.none )
 
         SelectOperation operation ->
-            ( { model | pairOperation = operation }, Cmd.none )
+            ( { model | operation = operation }, Cmd.none )
 
         TypedText _ ->
             ( model, Cmd.none )
 
 
-toInputValue : RootPgModel -> String
-toInputValue model =
-    let
-        operationSymbol =
-            if model.pairOperation == Operation.addition then
-                " + "
+generateExpressions : Cmd RootPgMsg
+generateExpressions =
+    Expression.Expression.generate Operation.Addition
+        |> Random.list 10
+        |> Random.andThen (\exps -> filterUniqueExps exps |> Random.constant)
+        |> Random.generate NewExpressions
 
-            else if model.pairOperation == Operation.subtraction then
-                " - "
 
-            else if model.pairOperation == Operation.multiplication then
-                " * "
-
-            else
-                " / "
-    in
-    case model.currPair of
-        Just ( i0, i1 ) ->
-            String.fromInt i0 ++ operationSymbol ++ String.fromInt i1 ++ " ="
-
-        Nothing ->
-            ""
+filterUniqueExps : List Expression -> List Expression
+filterUniqueExps exps =
+    List.foldl (\exp dict -> Dict.insert exp.arguments exp dict) Dict.empty exps |> Dict.values
 
 
 view : RootPgModel -> Html RootPgMsg
@@ -103,7 +72,7 @@ view model =
     Grid.container []
         [ Grid.row [ Row.centerXs ]
             [ Grid.col [ Col.xsAuto ]
-                [ Form.form [ onSubmit GeneratePairs ]
+                [ Form.form [ onSubmit GenerateExpressions ]
                     [ Form.row []
                         [ Form.col [ Col.xsAuto ]
                             [ label []
@@ -125,8 +94,9 @@ view model =
                                 [ Input.large
                                 , Input.attrs [ class "smc-input smc-input--text-center" ]
                                 , Input.onInput TypedText
-                                , Input.value <| toInputValue model
+                                , Input.value <| displayValue model.currExpression
                                 ]
+                            , variantList model.currExpression
                             ]
                         ]
                     ]
@@ -134,10 +104,26 @@ view model =
             ]
         , Grid.row [ Row.centerXs ]
             [ Grid.col [ Col.xsAuto ]
-                [ text model.pairOperation
-                , model.randomPairs
-                    |> List.map (\( n0, n1 ) -> li [] [ text <| "( " ++ String.fromInt n0 ++ ", " ++ String.fromInt n1 ++ " )" ])
-                    |> ul []
+                [ argumentList model.expressions
                 ]
             ]
         ]
+
+
+variantList : Maybe Expression -> Html msg
+variantList maybeExp =
+    case maybeExp of
+        Nothing ->
+            ul [] []
+
+        Just exp ->
+            exp.variants
+                |> List.map (\var -> li [ class "smc-exp-variants__item" ] [ Btn.button [ Btn.info, Btn.large, Btn.attrs [ type_ "button" ] ] [ text <| String.fromInt var ] ])
+                |> ul [ class "smc-exp-variants" ]
+
+
+argumentList : List Expression -> Html msg
+argumentList expressions =
+    expressions
+        |> List.map (\exp -> li [] [ text <| "( " ++ String.fromInt (Tuple.first exp.arguments) ++ ", " ++ String.fromInt (Tuple.second exp.arguments) ++ " )" ])
+        |> ul []
