@@ -3,7 +3,7 @@ module Expression.Expression exposing (..)
 import Expression.Operation exposing (Operation)
 import Random exposing (Generator)
 import Tuple exposing (pair)
-import Util.List exposing (toUniqueItems)
+import Util.List exposing (shacke, toUniqueItems)
 
 
 type alias Expression =
@@ -32,6 +32,7 @@ generate operation =
                         |> (::) result
                         |> List.filter ((<) 0)
                         |> toUniqueItems
+                        |> shacke
             in
             Expression operation pair variants
     in
