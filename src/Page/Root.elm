@@ -7,6 +7,7 @@ import Bootstrap.Form.Select as Select
 import Bootstrap.Grid as Grid
 import Bootstrap.Grid.Col as Col
 import Bootstrap.Grid.Row as Row
+import Browser.Navigation exposing (Key)
 import Dict
 import Expression.Expression exposing (Expression, displayValue)
 import Expression.Operation as Operation
@@ -14,20 +15,15 @@ import Html exposing (Html, label, li, text, ul)
 import Html.Attributes exposing (class, disabled, type_, value)
 import Html.Events exposing (onSubmit)
 import Random
+import Route
+import Url exposing (Url)
 
 
 type alias RootPgModel =
-    { operation : String
+    { route : Route.RouteModel
+    , operation : String
     , expressions : List Expression
     , currExpression : Maybe Expression
-    }
-
-
-init : RootPgModel
-init =
-    { operation = Operation.addition
-    , expressions = []
-    , currExpression = Nothing
     }
 
 
@@ -36,6 +32,15 @@ type RootPgMsg
     | NewExpressions (List Expression)
     | SelectOperation String
     | TypedText String
+
+
+init : Url -> Key -> RootPgModel
+init _ key =
+    { route = Route.init key
+    , operation = Operation.addition
+    , expressions = []
+    , currExpression = Nothing
+    }
 
 
 update : RootPgMsg -> RootPgModel -> ( RootPgModel, Cmd RootPgMsg )

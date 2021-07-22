@@ -1,30 +1,18 @@
 module Main exposing (main)
 
-import AppPath as AppPath
 import Browser exposing (Document, UrlRequest, application)
 import Browser.Navigation exposing (Key, load, pushUrl)
 import Html.Attributes exposing (href)
 import Page.NotFound
 import Page.Root
+import Route
 import Shell
 import Url exposing (Url)
 
 
-type alias Model =
-    { currUrl : Url
-    , navKey : Key
-    , rootModel : Page.Root.RootPgModel
-    }
-
-
-init : () -> Url -> Key -> ( Model, Cmd Msg )
-init _ url key =
-    ( { currUrl = url
-      , navKey = key
-      , rootModel = Page.Root.init
-      }
-    , Cmd.none
-    )
+type Model
+    = NotFound Page.NotFound.NotFoundPgModel
+    | Root Page.Root.RootPgModel
 
 
 type Msg
@@ -33,26 +21,63 @@ type Msg
     | GotRootPgMsg Page.Root.RootPgMsg
 
 
+init : () -> Url -> Key -> ( Model, Cmd Msg )
+init _ url key =
+    ( let
+        route =
+            Route.fromUrl url
+      in
+      case route of
+        Route.NotFound ->
+            Page.NotFound.init key |> NotFound
+
+        Route.Root ->
+            Page.Root.init url key |> Root
+    , Cmd.none
+    )
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    case msg of
-        ChangedUrl url ->
-            ( { model | currUrl = url }, Cmd.none )
+    case ( msg, model ) of
+        ( ChangedUrl _, _ ) ->
+            ( model, Cmd.none )
 
-        ClickedLink urlRequest ->
+        ( ClickedLink urlRequest, _ ) ->
             case urlRequest of
                 Browser.Internal url ->
-                    ( model, pushUrl model.navKey <| Url.toString url )
+                    let
+                        routeModel =
+                            toRouteModel model
+
+                        urlStr =
+                            Url.toString url
+                    in
+                    ( model, pushUrl routeModel.navKey urlStr )
 
                 Browser.External href ->
                     ( model, load href )
 
-        GotRootPgMsg subMsg ->
-            let
-                ( newRootModel, cmd ) =
-                    Page.Root.update subMsg model.rootModel
-            in
-            ( { model | rootModel = newRootModel }, Cmd.map GotRootPgMsg cmd )
+        ( GotRootPgMsg rootMsg, Root rootModel ) ->
+            Page.Root.update rootMsg rootModel |> updateWith GotRootPgMsg Root
+
+        ( _, _ ) ->
+            ( model, Cmd.none )
+
+
+toRouteModel : Model -> Route.RouteModel
+toRouteModel model =
+    case model of
+        Root rootModel ->
+            rootModel.route
+
+        NotFound nfModel ->
+            nfModel
+
+
+updateWith : (subMsg -> Msg) -> (subModel -> Model) -> ( subModel, Cmd subMsg ) -> ( Model, Cmd Msg )
+updateWith toMsg toModel ( subModel, subCmd ) =
+    ( toModel subModel, Cmd.map toMsg subCmd )
 
 
 subscriptions : Model -> Sub Msg
@@ -63,14 +88,15 @@ subscriptions _ =
 view : Model -> Document Msg
 view model =
     let
-        container pathname =
-            if pathname == AppPath.root then
-                [ Shell.view GotRootPgMsg <| Page.Root.view model.rootModel ]
-
-            else
-                [ Page.NotFound.view ]
+        title =
+            "Simple Math"
     in
-    { title = "Simple Math", body = container model.currUrl.path }
+    case model of
+        Root rootModel ->
+            { title = title, body = [ Page.Root.view rootModel |> Shell.view GotRootPgMsg ] }
+
+        NotFound nfModel ->
+            { title = title, body = [ Page.NotFound.view ] }
 
 
 main : Program () Model Msg
