@@ -1,4 +1,4 @@
-module Page.Root exposing (RootPgModel, RootPgMsg, init, update, view)
+module Page.Root exposing (RootPgModel, RootPgMsg, init, subscriptions, update, view)
 
 import Bootstrap.Button as Btn
 import Bootstrap.Form as Form
@@ -11,20 +11,40 @@ import Browser.Navigation exposing (Key)
 import Dict
 import Expression.Expression exposing (Expression, displayValue)
 import Expression.Operation as Operation
-import Html exposing (Html, label, li, text, ul)
+import Html exposing (Html, div, label, li, text, ul)
 import Html.Attributes exposing (class, disabled, type_, value)
 import Html.Events exposing (onSubmit)
 import Random
 import Route
+import Time
 import Url exposing (Url)
+
+
+
+-- model
 
 
 type alias RootPgModel =
     { route : Route.RouteModel
+    , currentTime : Time.Posix
     , operation : String
     , expressions : List Expression
     , currExpression : Maybe Expression
     }
+
+
+init : Url -> Key -> RootPgModel
+init _ key =
+    { route = Route.init key
+    , currentTime = Time.millisToPosix 0
+    , operation = Operation.addition
+    , expressions = []
+    , currExpression = Nothing
+    }
+
+
+
+-- update
 
 
 type RootPgMsg
@@ -32,22 +52,14 @@ type RootPgMsg
     | NewExpressions (List Expression)
     | SelectOperation String
     | TypedText String
-
-
-init : Url -> Key -> RootPgModel
-init _ key =
-    { route = Route.init key
-    , operation = Operation.addition
-    , expressions = []
-    , currExpression = Nothing
-    }
+    | GotTime Time.Posix
 
 
 update : RootPgMsg -> RootPgModel -> ( RootPgModel, Cmd RootPgMsg )
 update msg model =
     case msg of
         GenerateExpressions ->
-            ( model, generateExpressions )
+            ( model, generateExpressions model )
 
         NewExpressions exps ->
             ( { model | expressions = exps, currExpression = List.head exps }, Cmd.none )
@@ -58,10 +70,13 @@ update msg model =
         TypedText _ ->
             ( model, Cmd.none )
 
+        GotTime time ->
+            ( { model | currentTime = time }, Cmd.none )
 
-generateExpressions : Cmd RootPgMsg
-generateExpressions =
-    Expression.Expression.generate Operation.Addition
+
+generateExpressions : RootPgModel -> Cmd RootPgMsg
+generateExpressions model =
+    Expression.Expression.generate (Time.posixToMillis model.currentTime) Operation.Addition
         |> Random.list 10
         |> Random.andThen (\exps -> filterUniqueExps exps |> Random.constant)
         |> Random.generate NewExpressions
@@ -70,6 +85,19 @@ generateExpressions =
 filterUniqueExps : List Expression -> List Expression
 filterUniqueExps exps =
     List.foldl (\exp dict -> Dict.insert exp.arguments exp dict) Dict.empty exps |> Dict.values
+
+
+
+-- subscriptions
+
+
+subscriptions : a -> Sub RootPgMsg
+subscriptions _ =
+    Time.every 1000 GotTime
+
+
+
+-- view
 
 
 view : RootPgModel -> Html RootPgMsg
@@ -109,7 +137,8 @@ view model =
             ]
         , Grid.row [ Row.centerXs ]
             [ Grid.col [ Col.xsAuto ]
-                [ argumentList model.expressions
+                [ div [] [ model.currentTime |> Time.posixToMillis |> String.fromInt |> text ]
+                , argumentList model.expressions
                 ]
             ]
         ]

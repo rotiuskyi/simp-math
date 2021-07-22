@@ -10,15 +10,13 @@ import Shell
 import Url exposing (Url)
 
 
+
+-- model
+
+
 type Model
     = NotFound Page.NotFound.NotFoundPgModel
     | Root Page.Root.RootPgModel
-
-
-type Msg
-    = ChangedUrl Url
-    | ClickedLink UrlRequest
-    | GotRootPgMsg Page.Root.RootPgMsg
 
 
 init : () -> Url -> Key -> ( Model, Cmd Msg )
@@ -35,6 +33,16 @@ init _ url key =
             Page.Root.init url key |> Root
     , Cmd.none
     )
+
+
+
+-- update
+
+
+type Msg
+    = ChangedUrl Url
+    | ClickedLink UrlRequest
+    | GotRootPgMsg Page.Root.RootPgMsg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -75,14 +83,27 @@ toRouteModel model =
             nfModel
 
 
-updateWith : (subMsg -> Msg) -> (subModel -> Model) -> ( subModel, Cmd subMsg ) -> ( Model, Cmd Msg )
+updateWith : (a -> Msg) -> (b -> Model) -> ( b, Cmd a ) -> ( Model, Cmd Msg )
 updateWith toMsg toModel ( subModel, subCmd ) =
     ( toModel subModel, Cmd.map toMsg subCmd )
 
 
+
+-- subscriptions
+
+
 subscriptions : Model -> Sub Msg
-subscriptions _ =
-    Sub.none
+subscriptions model =
+    Page.Root.subscriptions model |> subscriptionsWith GotRootPgMsg
+
+
+subscriptionsWith : (a -> Msg) -> Sub a -> Sub Msg
+subscriptionsWith toMsg subMsg =
+    Sub.map toMsg subMsg
+
+
+
+-- view
 
 
 view : Model -> Document Msg
@@ -99,13 +120,17 @@ view model =
             { title = title, body = [ Page.NotFound.view ] }
 
 
+
+-- main
+
+
 main : Program () Model Msg
 main =
     application
-        { init = init
-        , view = view
+        { onUrlChange = ChangedUrl
+        , onUrlRequest = ClickedLink
+        , init = init
         , update = update
         , subscriptions = subscriptions
-        , onUrlChange = ChangedUrl
-        , onUrlRequest = ClickedLink
+        , view = view
         }

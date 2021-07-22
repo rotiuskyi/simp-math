@@ -13,8 +13,8 @@ type alias Expression =
     }
 
 
-generate : Operation -> Generator Expression
-generate operation =
+generate : Int -> Operation -> Generator Expression
+generate forInitialSeed operation =
     let
         intGen =
             Random.int 1 5
@@ -27,12 +27,15 @@ generate operation =
                 result =
                     Tuple.first pair + Tuple.second pair
 
+                initialSeed =
+                    Random.initialSeed forInitialSeed
+
                 variants =
                     List.range (result - 2) (result + 2)
                         |> (::) result
                         |> List.filter ((<) 0)
                         |> toUniqueItems
-                        |> shacke
+                        |> shacke initialSeed
             in
             Expression operation pair variants
     in
