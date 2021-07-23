@@ -1,7 +1,7 @@
 module Expression.Expression exposing (..)
 
 import Expression.Operation exposing (Operation)
-import Random exposing (Generator)
+import Random exposing (Generator, Seed)
 import Tuple exposing (pair)
 import Util.List exposing (shacke, toUniqueItems)
 
@@ -10,11 +10,12 @@ type alias Expression =
     { operation : Operation
     , arguments : ( Int, Int )
     , variants : List Int
+    , answer : Maybe Int
     }
 
 
-generate : Int -> Operation -> Generator Expression
-generate forInitialSeed operation =
+generate : Seed -> Operation -> Generator Expression
+generate seed operation =
     let
         intGen =
             Random.int 1 5
@@ -27,29 +28,41 @@ generate forInitialSeed operation =
                 result =
                     Tuple.first pair + Tuple.second pair
 
-                initialSeed =
-                    Random.initialSeed forInitialSeed
-
                 variants =
                     List.range (result - 2) (result + 2)
                         |> (::) result
                         |> List.filter ((<) 0)
                         |> toUniqueItems
-                        |> shacke initialSeed
+                        |> shacke seed
             in
-            Expression operation pair variants
+            Expression operation pair variants Nothing
     in
     Random.map toExp pairGen
 
 
 displayValue : Maybe Expression -> String
 displayValue maybeExp =
+    let
+        answerStr =
+            case maybeExp of
+                Just exp ->
+                    case exp.answer of
+                        Just answer ->
+                            String.fromInt answer
+
+                        Nothing ->
+                            ""
+
+                Nothing ->
+                    ""
+    in
     case maybeExp of
         Just exp ->
             String.fromInt (Tuple.first exp.arguments)
                 ++ Expression.Operation.toString exp.operation
                 ++ String.fromInt (Tuple.second exp.arguments)
                 ++ " = "
+                ++ answerStr
 
         Nothing ->
             ""
