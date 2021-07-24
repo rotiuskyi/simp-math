@@ -9,9 +9,9 @@ import Bootstrap.Grid.Col as Col
 import Bootstrap.Grid.Row as Row
 import Browser.Navigation exposing (Key)
 import Dict
-import Expression.Expression exposing (Expression, displayValue)
+import Expression.Expression exposing (Expression, displayValue, equalSign, toEqualSign)
 import Expression.Operation as Operation
-import Html exposing (Html, div, label, li, text, ul)
+import Html exposing (Html, label, li, text, ul)
 import Html.Attributes exposing (class, disabled, type_, value)
 import Html.Events exposing (onSubmit)
 import Process
@@ -105,7 +105,7 @@ update msg model =
             in
             ( { model
                 | currExpression = currExpression
-                , expressions = expressions
+                , expressions = Debug.log "expressions" expressions
                 , formDisabled = True
               }
             , Process.sleep 1000
@@ -221,25 +221,34 @@ view model =
                         ]
                     , Form.row []
                         [ Form.col []
-                            [ Input.text
-                                [ Input.large
-                                , Input.attrs [ class "smc-input smc-input--text-center" ]
-                                , Input.onInput TypedText
-                                , Input.value <| displayValue model.currExpression
-                                ]
+                            [ Input.text <|
+                                withSuccessOption model.currExpression
+                                    [ Input.large
+                                    , Input.attrs [ class "smc-input smc-input--text-center" ]
+                                    , Input.onInput TypedText
+                                    , Input.value <| displayValue model.currExpression
+                                    ]
                             , variantList model.currExpression model
                             ]
                         ]
                     ]
                 ]
             ]
-        , Grid.row [ Row.centerXs ]
-            [ Grid.col [ Col.xsAuto ]
-                [ div [] [ model.currentTime |> Time.posixToMillis |> String.fromInt |> text ]
-                , argumentList model.expressions
-                ]
-            ]
         ]
+
+
+withSuccessOption : Maybe Expression -> List (Input.Option msg) -> List (Input.Option msg)
+withSuccessOption mbExp opts =
+    case mbExp of
+        Nothing ->
+            opts
+
+        Just exp ->
+            if toEqualSign (Just exp) == equalSign then
+                List.append opts [ Input.success ]
+
+            else
+                opts
 
 
 variantList : Maybe Expression -> RootPgModel -> Html RootPgMsg
@@ -264,10 +273,3 @@ variantList maybeExp model =
                             ]
                     )
                 |> ul [ class "smc-exp-variants" ]
-
-
-argumentList : List Expression -> Html msg
-argumentList expressions =
-    expressions
-        |> List.map (\exp -> li [] [ text <| "( " ++ String.fromInt (Tuple.first exp.arguments) ++ ", " ++ String.fromInt (Tuple.second exp.arguments) ++ " )" ])
-        |> ul []
