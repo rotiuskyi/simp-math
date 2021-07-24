@@ -7,12 +7,13 @@ import Bootstrap.Form.Select as Select
 import Bootstrap.Grid as Grid
 import Bootstrap.Grid.Col as Col
 import Bootstrap.Grid.Row as Row
+import Bootstrap.Table as Table exposing (TBody(..))
 import Browser.Navigation exposing (Key)
 import Common.Route as Route
 import Dict
 import Feature.Expression exposing (Expression, displayValue, equalSign, toEqualSign)
 import Feature.ExpressionOperation as ExpOperation exposing (Operation(..))
-import Html exposing (Html, label, li, text, ul)
+import Html exposing (Html, h5, label, li, text, ul)
 import Html.Attributes exposing (class, disabled, type_, value)
 import Html.Events exposing (onSubmit)
 import Process
@@ -209,7 +210,7 @@ view model =
                             [ label []
                                 [ Select.select
                                     [ Select.onChange SelectOperation
-                                    , Select.attrs [ disabled <| whenStarted model ]
+                                    , Select.attrs [ disabled <| answering model ]
                                     ]
                                     [ Select.item [ Addition |> ExpOperation.toString |> value ] [ text "Addition" ]
                                     , Select.item [ Subtraction |> ExpOperation.toString |> value, disabled True ] [ text "Subtraction" ]
@@ -221,31 +222,54 @@ view model =
                         , Form.col []
                             [ Btn.button
                                 [ Btn.primary
-                                , Btn.attrs [ disabled <| whenStarted model ]
+                                , Btn.attrs [ disabled <| answering model ]
                                 ]
                                 [ text "Start Answering" ]
                             ]
                         ]
                     , Form.row []
                         [ Form.col []
-                            [ Input.text <|
-                                withSuccessOption model.currExpression
-                                    [ Input.large
-                                    , Input.attrs [ class "smc-input smc-input--text-center" ]
-                                    , Input.onInput TypedText
-                                    , Input.value <| displayValue model.currExpression
-                                    ]
-                            , variantList model.currExpression model
-                            ]
+                            [ expressionInput model ]
                         ]
+                    , Form.row []
+                        [ Form.col []
+                            [ variantList model ]
+                        ]
+                    ]
+                ]
+            ]
+        , Grid.row []
+            [ Grid.col []
+                [ h5 []
+                    [ text "Result"
+                    , Table.table
+                        { options = []
+                        , thead =
+                            Table.thead []
+                                [ Table.tr []
+                                    [ Table.th [] [ text "#" ]
+                                    , Table.th [] [ text "Expression" ]
+                                    ]
+                                ]
+                        , tbody =
+                            Table.tbody [] <|
+                                List.indexedMap
+                                    (\idx exp ->
+                                        Table.tr []
+                                            [ Table.td [] [ idx |> (+) 1 |> String.fromInt |> text ]
+                                            , Table.td [] [ Just exp |> displayValue |> text ]
+                                            ]
+                                    )
+                                    model.expressions
+                        }
                     ]
                 ]
             ]
         ]
 
 
-whenStarted : RootPgModel -> Bool
-whenStarted model =
+answering : RootPgModel -> Bool
+answering model =
     case model.currExpression of
         Nothing ->
             False
@@ -254,23 +278,37 @@ whenStarted model =
             True
 
 
-withSuccessOption : Maybe Expression -> List (Input.Option msg) -> List (Input.Option msg)
-withSuccessOption mbExp opts =
-    case mbExp of
+expressionInput : RootPgModel -> Html.Html RootPgMsg
+expressionInput model =
+    let
+        defaultOpts =
+            [ Input.large
+            , Input.attrs [ class "smc-input smc-input--text-center" ]
+            , Input.value <| displayValue model.currExpression
+            , Input.onInput TypedText
+            ]
+
+        defaultInput =
+            Input.text defaultOpts
+
+        successInput =
+            Input.text <| Input.success :: defaultOpts
+    in
+    case model.currExpression of
         Nothing ->
-            opts
+            defaultInput
 
         Just exp ->
             if toEqualSign (Just exp) == equalSign then
-                List.append opts [ Input.success ]
+                successInput
 
             else
-                opts
+                defaultInput
 
 
-variantList : Maybe Expression -> RootPgModel -> Html RootPgMsg
-variantList maybeExp model =
-    case maybeExp of
+variantList : RootPgModel -> Html RootPgMsg
+variantList model =
+    case model.currExpression of
         Nothing ->
             ul [] []
 
@@ -282,9 +320,9 @@ variantList maybeExp model =
                             [ Btn.button
                                 [ Btn.info
                                 , Btn.large
-                                , Btn.onClick (Answer var)
-                                , Btn.disabled model.answeringIsDisabled
                                 , Btn.attrs [ type_ "button" ]
+                                , Btn.disabled model.answeringIsDisabled
+                                , Btn.onClick (Answer var)
                                 ]
                                 [ text <| String.fromInt var ]
                             ]
