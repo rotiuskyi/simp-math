@@ -11,7 +11,7 @@ import Browser.Navigation exposing (Key)
 import Common.Route as Route
 import Dict
 import Feature.Expression exposing (Expression, displayValue, equalSign, toEqualSign)
-import Feature.ExpressionOperation as Operation
+import Feature.ExpressionOperation as ExpOperation exposing (Operation(..))
 import Html exposing (Html, label, li, text, ul)
 import Html.Attributes exposing (class, disabled, type_, value)
 import Html.Events exposing (onSubmit)
@@ -31,10 +31,10 @@ type alias RootPgModel =
     { route : Route.RouteModel
     , currentTime : Time.Posix
     , currentTimeSeed : Random.Seed
-    , operation : String
+    , operation : Operation
     , expressions : List Expression
     , currExpression : Maybe Expression
-    , formDisabled : Bool
+    , answeringIsDisabled : Bool
     }
 
 
@@ -43,10 +43,10 @@ init _ key =
     { route = Route.init key
     , currentTime = Time.millisToPosix 0
     , currentTimeSeed = Random.initialSeed 0
-    , operation = Operation.addition
+    , operation = Addition
     , expressions = []
     , currExpression = Nothing
-    , formDisabled = False
+    , answeringIsDisabled = False
     }
 
 
@@ -76,7 +76,7 @@ update msg model =
             )
 
         SelectOperation operation ->
-            ( { model | operation = operation }, Cmd.none )
+            ( { model | operation = ExpOperation.fromString operation }, Cmd.none )
 
         TypedText _ ->
             ( model, Cmd.none )
@@ -106,7 +106,7 @@ update msg model =
             ( { model
                 | currExpression = currExpression
                 , expressions = Debug.log "expressions" expressions
-                , formDisabled = True
+                , answeringIsDisabled = True
               }
             , Process.sleep 1000
                 |> Task.andThen (always <| Task.succeed NextExpression)
@@ -132,7 +132,7 @@ update msg model =
             ( { model
                 | currExpression = currExpression
                 , expressions = expressions
-                , formDisabled = False
+                , answeringIsDisabled = False
               }
             , Cmd.none
             )
@@ -174,7 +174,7 @@ nextExpression mbCurrExp expressions =
 
 generateExpressions : RootPgModel -> Cmd RootPgMsg
 generateExpressions model =
-    Feature.Expression.generate model.currentTimeSeed (Operation.fromString model.operation)
+    Feature.Expression.generate model.currentTimeSeed model.operation
         |> Random.list 10
         |> Random.andThen (\exps -> filterUniqueExps exps |> Random.constant)
         |> Random.generate NewExpressions
@@ -207,16 +207,23 @@ view model =
                     [ Form.row []
                         [ Form.col [ Col.xsAuto ]
                             [ label []
-                                [ Select.select [ Select.onChange SelectOperation ]
-                                    [ Select.item [ value Operation.addition ] [ text Operation.addition ]
-                                    , Select.item [ value Operation.multiplication ] [ text Operation.multiplication ]
-                                    , Select.item [ value Operation.subtraction, disabled True ] [ text Operation.subtraction ]
-                                    , Select.item [ value Operation.division, disabled True ] [ text Operation.division ]
+                                [ Select.select
+                                    [ Select.onChange SelectOperation
+                                    , Select.attrs [ disabled <| whenStarted model ]
+                                    ]
+                                    [ Select.item [ Addition |> ExpOperation.toString |> value ] [ text "Addition" ]
+                                    , Select.item [ Subtraction |> ExpOperation.toString |> value, disabled True ] [ text "Subtraction" ]
+                                    , Select.item [ Multiplication |> ExpOperation.toString |> value ] [ text "Multiplication" ]
+                                    , Select.item [ Division |> ExpOperation.toString |> value, disabled True ] [ text "Division" ]
                                     ]
                                 ]
                             ]
                         , Form.col []
-                            [ Btn.button [ Btn.primary ] [ text "Generate Pairs" ]
+                            [ Btn.button
+                                [ Btn.primary
+                                , Btn.attrs [ disabled <| whenStarted model ]
+                                ]
+                                [ text "Start Answering" ]
                             ]
                         ]
                     , Form.row []
@@ -235,6 +242,16 @@ view model =
                 ]
             ]
         ]
+
+
+whenStarted : RootPgModel -> Bool
+whenStarted model =
+    case model.currExpression of
+        Nothing ->
+            False
+
+        Just _ ->
+            True
 
 
 withSuccessOption : Maybe Expression -> List (Input.Option msg) -> List (Input.Option msg)
@@ -266,7 +283,7 @@ variantList maybeExp model =
                                 [ Btn.info
                                 , Btn.large
                                 , Btn.onClick (Answer var)
-                                , Btn.disabled model.formDisabled
+                                , Btn.disabled model.answeringIsDisabled
                                 , Btn.attrs [ type_ "button" ]
                                 ]
                                 [ text <| String.fromInt var ]

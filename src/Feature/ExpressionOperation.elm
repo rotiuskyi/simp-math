@@ -1,4 +1,4 @@
-module Feature.ExpressionOperation exposing (..)
+module Feature.ExpressionOperation exposing (Operation(..), fromString, toString)
 
 
 type Operation
@@ -8,54 +8,54 @@ type Operation
     | Division
 
 
-addition : String
-addition =
-    "Addition"
+additionSign : String
+additionSign =
+    " + "
 
 
-subtraction : String
-subtraction =
-    "Subtraction"
+substractionSign : String
+substractionSign =
+    " - "
 
 
-multiplication : String
-multiplication =
-    "Multiplication"
+multiplicationSign : String
+multiplicationSign =
+    " · "
 
 
-division : String
-division =
-    "Division"
+divisionSign : String
+divisionSign =
+    " ÷ "
 
 
 toString : Operation -> String
 toString operation =
     case operation of
         Addition ->
-            " + "
-
-        Multiplication ->
-            " · "
+            additionSign
 
         Subtraction ->
-            " - "
+            substractionSign
+
+        Multiplication ->
+            multiplicationSign
 
         Division ->
-            " / "
+            divisionSign
 
 
 fromString : String -> Operation
 fromString operation =
-    if operation == addition then
+    if operation == additionSign then
         Addition
 
-    else if operation == multiplication then
-        Multiplication
-
-    else if operation == subtraction then
+    else if operation == substractionSign then
         Subtraction
 
-    else if operation == division then
+    else if operation == multiplicationSign then
+        Multiplication
+
+    else if operation == divisionSign then
         Division
 
     else
