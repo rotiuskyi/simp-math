@@ -8,15 +8,15 @@ import Bootstrap.Grid as Grid
 import Bootstrap.Grid.Col as Col
 import Bootstrap.Grid.Row as Row
 import Browser.Navigation exposing (Key)
+import Common.Route as Route
 import Dict
-import Expression.Expression exposing (Expression, displayValue, equalSign, toEqualSign)
-import Expression.Operation as Operation
+import Feature.Expression exposing (Expression, displayValue, equalSign, toEqualSign)
+import Feature.ExpressionOperation as Operation
 import Html exposing (Html, label, li, text, ul)
 import Html.Attributes exposing (class, disabled, type_, value)
 import Html.Events exposing (onSubmit)
 import Process
 import Random
-import Route
 import Task
 import Time
 import Url exposing (Url)
@@ -174,7 +174,7 @@ nextExpression mbCurrExp expressions =
 
 generateExpressions : RootPgModel -> Cmd RootPgMsg
 generateExpressions model =
-    Expression.Expression.generate model.currentTimeSeed Operation.Addition
+    Feature.Expression.generate model.currentTimeSeed Operation.Addition
         |> Random.list 10
         |> Random.andThen (\exps -> filterUniqueExps exps |> Random.constant)
         |> Random.generate NewExpressions

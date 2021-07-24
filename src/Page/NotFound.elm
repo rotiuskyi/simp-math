@@ -1,8 +1,8 @@
 module Page.NotFound exposing (NotFoundPgModel, init, view)
 
 import Browser.Navigation exposing (Key)
+import Common.Route as Route
 import Html exposing (Html, div, text)
-import Route
 
 
 type alias NotFoundPgModel =

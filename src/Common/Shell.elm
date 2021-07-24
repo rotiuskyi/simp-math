@@ -1,4 +1,4 @@
-module Shell exposing (view)
+module Common.Shell exposing (view)
 
 import Html exposing (Html, div, h5, text)
 import Html.Attributes exposing (class)

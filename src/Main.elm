@@ -2,11 +2,11 @@ module Main exposing (main)
 
 import Browser exposing (Document, UrlRequest, application)
 import Browser.Navigation exposing (Key, load, pushUrl)
+import Common.Route as Route
+import Common.Shell as Shell
 import Html.Attributes exposing (href)
 import Page.NotFound
 import Page.Root
-import Route
-import Shell
 import Url exposing (Url)
 
 

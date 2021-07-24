@@ -1,4 +1,4 @@
-module Expression.Operation exposing (..)
+module Feature.ExpressionOperation exposing (..)
 
 
 type Operation

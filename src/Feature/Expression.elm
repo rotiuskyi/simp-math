@@ -1,6 +1,6 @@
-module Expression.Expression exposing (..)
+module Feature.Expression exposing (..)
 
-import Expression.Operation exposing (Operation(..))
+import Feature.ExpressionOperation exposing (Operation(..))
 import Random exposing (Generator, Seed)
 import Tuple exposing (pair)
 import Util.List exposing (shacke, toUniqueItems)
@@ -59,7 +59,7 @@ displayValue mbExp =
     case mbExp of
         Just exp ->
             String.fromInt (Tuple.first exp.arguments)
-                ++ Expression.Operation.toString exp.operation
+                ++ Feature.ExpressionOperation.toString exp.operation
                 ++ String.fromInt (Tuple.second exp.arguments)
                 ++ toEqualSign (Just exp)
                 ++ answerStr

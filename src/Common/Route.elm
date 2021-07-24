@@ -1,4 +1,4 @@
-module Route exposing (..)
+module Common.Route exposing (..)
 
 import Browser.Navigation
 import Url exposing (Url)
