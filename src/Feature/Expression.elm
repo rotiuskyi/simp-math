@@ -23,14 +23,26 @@ generate seed operation =
         pairGen =
             Random.pair intGen intGen
 
-        toExp pair =
-            let
-                result =
+        result : ( Int, Int ) -> Int
+        result pair =
+            case operation of
+                Addition ->
                     Tuple.first pair + Tuple.second pair
 
+                Subtraction ->
+                    Tuple.first pair - Tuple.second pair
+
+                Multiplication ->
+                    Tuple.first pair * Tuple.second pair
+
+                Division ->
+                    Tuple.first pair // Tuple.second pair
+
+        toExp pair =
+            let
                 variants =
-                    List.range (result - 2) (result + 2)
-                        |> (::) result
+                    List.range (result pair - 2) (result pair + 2)
+                        |> (::) (result pair)
                         |> List.filter ((<) 0)
                         |> toUniqueItems
                         |> shacke seed

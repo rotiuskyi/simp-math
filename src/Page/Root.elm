@@ -174,7 +174,7 @@ nextExpression mbCurrExp expressions =
 
 generateExpressions : RootPgModel -> Cmd RootPgMsg
 generateExpressions model =
-    Feature.Expression.generate model.currentTimeSeed Operation.Addition
+    Feature.Expression.generate model.currentTimeSeed (Operation.fromString model.operation)
         |> Random.list 10
         |> Random.andThen (\exps -> filterUniqueExps exps |> Random.constant)
         |> Random.generate NewExpressions

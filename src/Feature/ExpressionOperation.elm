@@ -35,7 +35,7 @@ toString operation =
             " + "
 
         Multiplication ->
-            " * "
+            " · "
 
         Subtraction ->
             " - "
