@@ -7,11 +7,11 @@
   display: flex;
   align-items: center;
   height: 100%;
-}
 
-.logo-box .logo-box__logo {
-  height: 32px;
-  background-color: var(--light);
+  &__logo {
+    height: 32px;
+    background-color: var(--light);
+  }
 }
 
 .expression-input {
@@ -23,8 +23,8 @@
   margin: 0;
   padding: 0;
   list-style: none;
-}
 
-.variant-list .variant-list__item {
-  padding: 0 0.5rem;
+  &__item {
+    padding: 0 0.5rem;
+  }
 }
