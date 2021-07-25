@@ -21,7 +21,7 @@ init key =
 
 fromUrl : Url -> Route
 fromUrl { path } =
-    if path == "/" then
+    if path == "/dev-simple-math/" then
         Root
 
     else
