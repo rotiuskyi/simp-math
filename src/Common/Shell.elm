@@ -1,14 +1,14 @@
 module Common.Shell exposing (view)
 
-import Html exposing (Html, div, h5, text)
-import Html.Attributes exposing (class)
+import Html exposing (Html, div, img)
+import Html.Attributes exposing (class, src)
 
 
 header : Html msg
 header =
-    div [ class "smc-header" ]
-        [ div [ class "container smc-header__content" ]
-            [ h5 [ class "smc-header__title" ] [ text "Simple Math" ]
+    div [ class "header" ]
+        [ div [ class "container logo-box" ]
+            [ img [ class "logo-box__logo", src "/favicon.ico" ] []
             ]
         ]
 

@@ -13,7 +13,7 @@ import Common.Route as Route
 import Dict
 import Feature.Expression exposing (Expression, displayValue, equalSign, toEqualSign)
 import Feature.ExpressionOperation as ExpOperation exposing (Operation(..))
-import Html exposing (Html, h5, label, li, text, ul)
+import Html exposing (Html, div, h1, label, li, text, ul)
 import Html.Attributes exposing (class, disabled, type_, value)
 import Html.Events exposing (onSubmit)
 import Process
@@ -36,6 +36,7 @@ type alias RootPgModel =
     , expressions : List Expression
     , currExpression : Maybe Expression
     , answeringIsDisabled : Bool
+    , answered : Bool
     }
 
 
@@ -48,6 +49,7 @@ init _ key =
     , expressions = []
     , currExpression = Nothing
     , answeringIsDisabled = False
+    , answered = False
     }
 
 
@@ -86,7 +88,13 @@ update msg model =
             ( model, generateExpressions model )
 
         NewExpressions exps ->
-            ( { model | expressions = exps, currExpression = List.head exps }, Cmd.none )
+            ( { model
+                | expressions = exps
+                , currExpression = List.head exps
+                , answered = False
+              }
+            , Cmd.none
+            )
 
         Answer answer ->
             let
@@ -106,7 +114,7 @@ update msg model =
             in
             ( { model
                 | currExpression = currExpression
-                , expressions = Debug.log "expressions" expressions
+                , expressions = expressions
                 , answeringIsDisabled = True
               }
             , Process.sleep 1000
@@ -127,6 +135,14 @@ update msg model =
                         Nothing ->
                             mbCurrExp
 
+                answered =
+                    case mbNewCurrExp of
+                        Nothing ->
+                            True
+
+                        Just _ ->
+                            False
+
                 ( currExpression, expressions ) =
                     updateCurrExp mbCurrExp mbNewCurrExp model.expressions
             in
@@ -134,6 +150,7 @@ update msg model =
                 | currExpression = currExpression
                 , expressions = expressions
                 , answeringIsDisabled = False
+                , answered = answered
               }
             , Cmd.none
             )
@@ -202,8 +219,12 @@ subscriptions _ =
 view : RootPgModel -> Html RootPgMsg
 view model =
     Grid.container []
-        [ Grid.row [ Row.centerXs ]
-            [ Grid.col [ Col.xsAuto ]
+        [ div [ class "page-header" ]
+            [ h1 []
+                [ text "Unit #1" ]
+            ]
+        , Grid.row [ Row.centerXs ]
+            [ Grid.col []
                 [ Form.form [ onSubmit GenerateExpressions ]
                     [ Form.row []
                         [ Form.col [ Col.xsAuto ]
@@ -231,8 +252,8 @@ view model =
                         [ Form.col []
                             [ expressionInput model ]
                         ]
-                    , Form.row []
-                        [ Form.col []
+                    , Form.row [ Row.centerXs ]
+                        [ Form.col [ Col.xsAuto ]
                             [ variantList model ]
                         ]
                     ]
@@ -240,30 +261,7 @@ view model =
             ]
         , Grid.row []
             [ Grid.col []
-                [ h5 []
-                    [ text "Result"
-                    , Table.table
-                        { options = []
-                        , thead =
-                            Table.thead []
-                                [ Table.tr []
-                                    [ Table.th [] [ text "#" ]
-                                    , Table.th [] [ text "Expression" ]
-                                    ]
-                                ]
-                        , tbody =
-                            Table.tbody [] <|
-                                List.indexedMap
-                                    (\idx exp ->
-                                        Table.tr []
-                                            [ Table.td [] [ idx |> (+) 1 |> String.fromInt |> text ]
-                                            , Table.td [] [ Just exp |> displayValue |> text ]
-                                            ]
-                                    )
-                                    model.expressions
-                        }
-                    ]
-                ]
+                [ resultTable model ]
             ]
         ]
 
@@ -283,7 +281,7 @@ expressionInput model =
     let
         defaultOpts =
             [ Input.large
-            , Input.attrs [ class "smc-input smc-input--text-center" ]
+            , Input.attrs [ class "expression-input" ]
             , Input.value <| displayValue model.currExpression
             , Input.onInput TypedText
             ]
@@ -308,15 +306,19 @@ expressionInput model =
 
 variantList : RootPgModel -> Html RootPgMsg
 variantList model =
+    let
+        list =
+            ul [ class "variant-list" ]
+    in
     case model.currExpression of
         Nothing ->
-            ul [] []
+            list []
 
         Just exp ->
             exp.variants
                 |> List.map
                     (\var ->
-                        li [ class "smc-exp-variants__item" ]
+                        li [ class "variant-list__item" ]
                             [ Btn.button
                                 [ Btn.info
                                 , Btn.large
@@ -327,4 +329,40 @@ variantList model =
                                 [ text <| String.fromInt var ]
                             ]
                     )
-                |> ul [ class "smc-exp-variants" ]
+                |> list
+
+
+resultTable : RootPgModel -> Html.Html msg
+resultTable model =
+    let
+        options =
+            []
+
+        thead =
+            Table.thead []
+                [ Table.tr []
+                    [ Table.th [] [ text "#" ]
+                    , Table.th [] [ text "Expression" ]
+                    ]
+                ]
+
+        tbody =
+            Table.tbody [] <|
+                List.indexedMap
+                    (\idx exp ->
+                        Table.tr []
+                            [ Table.td [] [ idx |> (+) 1 |> String.fromInt |> text ]
+                            , Table.td [] [ Just exp |> displayValue |> text ]
+                            ]
+                    )
+                    model.expressions
+    in
+    if model.answered then
+        Table.table
+            { options = options
+            , thead = thead
+            , tbody = tbody
+            }
+
+    else
+        text ""
