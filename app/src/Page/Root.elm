@@ -223,7 +223,7 @@ view model =
             [ h1 []
                 [ text "Unit #1" ]
             ]
-        , Grid.row [ Row.centerXs ]
+        , Grid.row []
             [ Grid.col []
                 [ Form.form [ onSubmit GenerateExpressions ]
                     [ Form.row []
@@ -248,14 +248,18 @@ view model =
                                 [ text "Start Answering" ]
                             ]
                         ]
-                    , Form.row []
-                        [ Form.col []
-                            [ expressionInput model ]
-                        ]
-                    , Form.row [ Row.centerXs ]
-                        [ Form.col [ Col.xsAuto ]
-                            [ variantList model ]
-                        ]
+                    , Form.row
+                        []
+                        |> renderWhenAnswering model
+                            [ Form.col []
+                                [ expressionInput model ]
+                            ]
+                    , Form.row
+                        [ Row.centerXs ]
+                        |> renderWhenAnswering model
+                            [ Form.col [ Col.xsAuto ]
+                                [ variantList model ]
+                            ]
                     ]
                 ]
             ]
@@ -264,6 +268,20 @@ view model =
                 [ resultTable model ]
             ]
         ]
+
+
+renderWhenAnswering :
+    RootPgModel
+    -> List (Form.Col RootPgMsg)
+    -> (List (Form.Col RootPgMsg) -> Html.Html msg)
+    -> Html.Html msg
+renderWhenAnswering model colOps toMsg =
+    case model.currExpression of
+        Nothing ->
+            text ""
+
+        Just _ ->
+            toMsg colOps
 
 
 answering : RootPgModel -> Bool
@@ -294,7 +312,7 @@ expressionInput model =
     in
     case model.currExpression of
         Nothing ->
-            defaultInput
+            text ""
 
         Just exp ->
             if toEqualSign (Just exp) == equalSign then
@@ -312,7 +330,7 @@ variantList model =
     in
     case model.currExpression of
         Nothing ->
-            list []
+            text ""
 
         Just exp ->
             exp.variants
