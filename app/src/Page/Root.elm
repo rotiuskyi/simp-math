@@ -11,7 +11,7 @@ import Bootstrap.Table as Table exposing (TBody(..))
 import Browser.Navigation exposing (Key)
 import Common.Route as Route
 import Dict
-import Feature.Expression exposing (Expression, displayValue, equalSign, toEqualSign)
+import Feature.Expression exposing (Expression, answeredAndCorrectly, displayValue)
 import Feature.ExpressionOperation as ExpOperation exposing (Operation(..))
 import Html exposing (Html, div, h1, label, li, text, ul)
 import Html.Attributes exposing (class, disabled, type_, value)
@@ -98,19 +98,16 @@ update msg model =
 
         Answer answer ->
             let
-                mbCurrExp =
-                    model.currExpression
-
-                mbNewCurrExp =
-                    case mbCurrExp of
+                newCurrExp =
+                    case model.currExpression of
                         Just currExp ->
                             Just { currExp | answer = Just answer }
 
                         Nothing ->
-                            mbCurrExp
+                            model.currExpression
 
                 ( currExpression, expressions ) =
-                    updateCurrExp mbCurrExp mbNewCurrExp model.expressions
+                    updateCurrExp model.currExpression newCurrExp model.expressions
             in
             ( { model
                 | currExpression = currExpression
@@ -315,7 +312,7 @@ expressionInput model =
             text ""
 
         Just exp ->
-            if toEqualSign (Just exp) == equalSign then
+            if answeredAndCorrectly (Just exp) then
                 successInput
 
             else

@@ -88,50 +88,35 @@ answeredAndCorrectly mbExp =
 
 displayValue : Maybe Expression -> String
 displayValue mbExp =
-    let
-        answerStr =
-            case mbExp of
-                Just exp ->
+    case mbExp of
+        Just exp ->
+            let
+                answerStr =
                     case exp.answer of
                         Just answer ->
                             String.fromInt answer
 
                         Nothing ->
                             ""
-
-                Nothing ->
-                    ""
-    in
-    case mbExp of
-        Just exp ->
+            in
             String.fromInt (Tuple.first exp.arguments)
                 ++ Feature.ExpressionOperation.toString exp.operation
                 ++ String.fromInt (Tuple.second exp.arguments)
-                ++ toEqualSign (Just exp)
+                ++ resultSign (Just exp)
                 ++ answerStr
 
         Nothing ->
             ""
 
 
-equalSign : String
-equalSign =
-    " = "
-
-
-notEqualSign : String
-notEqualSign =
-    " ≠ "
-
-
-toEqualSign : Maybe Expression -> String
-toEqualSign mbExp =
+resultSign : Maybe Expression -> String
+resultSign mbExp =
     if answered mbExp then
         if answeredAndCorrectly mbExp then
-            equalSign
+            " = "
 
         else
-            notEqualSign
+            " ≠ "
 
     else
         ""
