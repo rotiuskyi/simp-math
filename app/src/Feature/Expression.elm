@@ -23,26 +23,14 @@ generate seed operation =
         pairGen =
             Random.pair intGen intGen
 
-        result : ( Int, Int ) -> Int
-        result pair =
-            case operation of
-                Addition ->
-                    Tuple.first pair + Tuple.second pair
-
-                Subtraction ->
-                    Tuple.first pair - Tuple.second pair
-
-                Multiplication ->
-                    Tuple.first pair * Tuple.second pair
-
-                Division ->
-                    Tuple.first pair // Tuple.second pair
+        expResultOf =
+            result operation
 
         toExp pair =
             let
                 variants =
-                    List.range (result pair - 2) (result pair + 2)
-                        |> (::) (result pair)
+                    List.range (expResultOf pair - 2) (expResultOf pair + 2)
+                        |> (::) (expResultOf pair)
                         |> List.filter ((<) 0)
                         |> toUniqueItems
                         |> shacke seed
@@ -50,6 +38,52 @@ generate seed operation =
             Expression operation pair variants Nothing
     in
     Random.map toExp pairGen
+
+
+result : Operation -> ( Int, Int ) -> Int
+result operation pair =
+    case operation of
+        Addition ->
+            Tuple.first pair + Tuple.second pair
+
+        Subtraction ->
+            Tuple.first pair - Tuple.second pair
+
+        Multiplication ->
+            Tuple.first pair * Tuple.second pair
+
+        Division ->
+            Tuple.first pair // Tuple.second pair
+
+
+answered : Maybe Expression -> Bool
+answered mbExp =
+    case mbExp of
+        Nothing ->
+            False
+
+        Just exp ->
+            case exp.answer of
+                Nothing ->
+                    False
+
+                Just _ ->
+                    True
+
+
+answeredAndCorrectly : Maybe Expression -> Bool
+answeredAndCorrectly mbExp =
+    case mbExp of
+        Nothing ->
+            False
+
+        Just exp ->
+            case ( exp.operation, exp.answer ) of
+                ( _, Just answer ) ->
+                    result exp.operation exp.arguments == answer
+
+                _ ->
+                    False
 
 
 displayValue : Maybe Expression -> String
@@ -92,46 +126,12 @@ notEqualSign =
 
 toEqualSign : Maybe Expression -> String
 toEqualSign mbExp =
-    case mbExp of
-        Nothing ->
-            ""
+    if answered mbExp then
+        if answeredAndCorrectly mbExp then
+            equalSign
 
-        Just exp ->
-            let
-                first =
-                    Tuple.first exp.arguments
+        else
+            notEqualSign
 
-                second =
-                    Tuple.second exp.arguments
-            in
-            case ( exp.operation, exp.answer ) of
-                ( Addition, Just answer ) ->
-                    if first + second == answer then
-                        equalSign
-
-                    else
-                        notEqualSign
-
-                ( Subtraction, Just answer ) ->
-                    if first - second == answer then
-                        equalSign
-
-                    else
-                        notEqualSign
-
-                ( Multiplication, Just answer ) ->
-                    if first * second == answer then
-                        equalSign
-
-                    else
-                        notEqualSign
-
-                ( Division, Just answer ) ->
-                    if toFloat first / toFloat second == toFloat answer then
-                        equalSign
-
-                    else
-                        notEqualSign
-
-                _ ->
-                    ""
+    else
+        ""
