@@ -13,7 +13,7 @@ import Common.Route as Route
 import Dict
 import Feature.Expression exposing (Expression, answeredAndCorrectly, displayValue)
 import Feature.ExpressionOperation as ExpOperation exposing (Operation(..))
-import Html exposing (Html, div, h1, label, li, text, ul)
+import Html exposing (Html, div, h1, h2, label, li, text, ul)
 import Html.Attributes exposing (class, disabled, type_, value)
 import Html.Events exposing (onSubmit)
 import Process
@@ -220,50 +220,50 @@ view model =
             [ h1 []
                 [ text "Unit #1" ]
             ]
-        , Grid.row []
-            [ Grid.col []
-                [ Form.form [ onSubmit GenerateExpressions ]
-                    [ Form.row []
-                        [ Form.col [ Col.xsAuto ]
-                            [ label []
-                                [ Select.select
-                                    [ Select.onChange SelectOperation
-                                    , Select.attrs [ disabled <| answering model ]
-                                    ]
-                                    [ Select.item [ Addition |> ExpOperation.toString |> value ] [ text "Addition" ]
-                                    , Select.item [ Subtraction |> ExpOperation.toString |> value, disabled True ] [ text "Subtraction" ]
-                                    , Select.item [ Multiplication |> ExpOperation.toString |> value ] [ text "Multiplication" ]
-                                    , Select.item [ Division |> ExpOperation.toString |> value, disabled True ] [ text "Division" ]
-                                    ]
+        , div []
+            [ Form.form [ onSubmit GenerateExpressions ]
+                [ Form.row []
+                    [ Form.col [ Col.xsAuto ]
+                        [ label []
+                            [ Select.select
+                                [ Select.onChange SelectOperation
+                                , Select.attrs [ disabled <| answering model ]
                                 ]
-                            ]
-                        , Form.col []
-                            [ Btn.button
-                                [ Btn.primary
-                                , Btn.attrs [ disabled <| answering model ]
+                                [ Select.item [ Addition |> ExpOperation.toString |> value ] [ text "Addition" ]
+                                , Select.item [ Subtraction |> ExpOperation.toString |> value, disabled True ] [ text "Subtraction" ]
+                                , Select.item [ Multiplication |> ExpOperation.toString |> value ] [ text "Multiplication" ]
+                                , Select.item [ Division |> ExpOperation.toString |> value, disabled True ] [ text "Division" ]
                                 ]
-                                [ text "Start Answering" ]
                             ]
                         ]
-                    , Form.row
-                        []
-                        |> renderWhenAnswering model
-                            [ Form.col []
-                                [ expressionInput model ]
-                            ]
-                    , Form.row
-                        [ Row.centerXs ]
-                        |> renderWhenAnswering model
-                            [ Form.col [ Col.xsAuto ]
-                                [ variantList model ]
-                            ]
                     ]
+                , Form.row []
+                    [ Form.col []
+                        [ Btn.button
+                            [ Btn.primary
+                            , Btn.block
+                            , Btn.large
+                            , Btn.attrs [ disabled <| answering model ]
+                            ]
+                            [ text "Start Answering" ]
+                        ]
+                    ]
+                , Form.row
+                    []
+                    |> renderWhenAnswering model
+                        [ Form.col []
+                            [ expressionInput model ]
+                        ]
+                , Form.row
+                    [ Row.centerXs ]
+                    |> renderWhenAnswering model
+                        [ Form.col [ Col.xsAuto ]
+                            [ variantList model ]
+                        ]
                 ]
             ]
-        , Grid.row []
-            [ Grid.col []
-                [ resultTable model ]
-            ]
+        , div []
+            [ resultTable model ]
         ]
 
 
@@ -358,26 +358,59 @@ resultTable model =
                 [ Table.tr []
                     [ Table.th [] [ text "#" ]
                     , Table.th [] [ text "Expression" ]
+                    , Table.th [] [ text "Spent Time (sec)" ]
                     ]
                 ]
 
-        tbody =
-            Table.tbody [] <|
-                List.indexedMap
-                    (\idx exp ->
-                        Table.tr []
+        expRows =
+            List.indexedMap
+                (\idx exp ->
+                    Table.tr
+                        |> withSuccessOption exp
+                            []
                             [ Table.td [] [ idx |> (+) 1 |> String.fromInt |> text ]
                             , Table.td [] [ Just exp |> displayValue |> text ]
+                            , Table.td [] [ text "-" ]
                             ]
-                    )
-                    model.expressions
+                )
+                model.expressions
+
+        tbody =
+            Table.tbody [] <|
+                (++) expRows <|
+                    [ Table.tr [ Table.rowInfo ]
+                        [ Table.td []
+                            [ text "Total" ]
+                        , Table.td []
+                            [ text "- % correct answers" ]
+                        , Table.td []
+                            [ text "-" ]
+                        ]
+                    ]
     in
     if model.answered then
-        Table.table
-            { options = options
-            , thead = thead
-            , tbody = tbody
-            }
+        div []
+            [ h2 [] [ text "Result" ]
+            , Table.table
+                { options = options
+                , thead = thead
+                , tbody = tbody
+                }
+            ]
 
     else
         text ""
+
+
+withSuccessOption :
+    Expression
+    -> List (Table.RowOption msg)
+    -> List (Table.Cell msg)
+    -> (List (Table.RowOption msg) -> List (Table.Cell msg) -> Table.Row msg)
+    -> Table.Row msg
+withSuccessOption exp rowOps cells toMsg =
+    if Just exp |> answeredAndCorrectly then
+        toMsg (Table.rowSuccess :: rowOps) cells
+
+    else
+        toMsg rowOps cells
