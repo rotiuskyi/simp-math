@@ -11,7 +11,7 @@ import Bootstrap.Table as Table exposing (TBody(..))
 import Browser.Navigation exposing (Key)
 import Common.Route as Route
 import Dict
-import Feature.Expression exposing (Expression, answeredAndCorrectly, displayValue)
+import Feature.Expression exposing (Expression, answeredAndCorrectly, correctPercents, displayValue)
 import Feature.ExpressionOperation as ExpOperation exposing (Operation(..))
 import Html exposing (Html, div, h1, h2, label, li, text, ul)
 import Html.Attributes exposing (class, disabled, type_, value)
@@ -382,7 +382,9 @@ resultTable model =
                         [ Table.td []
                             [ text "Total" ]
                         , Table.td []
-                            [ text "- % correct answers" ]
+                            [ text <| String.fromInt <| correctPercents model.expressions
+                            , text "% of correct answers"
+                            ]
                         , Table.td []
                             [ text "-" ]
                         ]

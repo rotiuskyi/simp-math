@@ -86,6 +86,27 @@ answeredAndCorrectly mbExp =
                     False
 
 
+correctPercents : List Expression -> Int
+correctPercents exps =
+    let
+        totalCount =
+            List.length exps
+
+        correctCount =
+            List.foldl
+                (\exp acc ->
+                    if Just exp |> answeredAndCorrectly then
+                        acc + 1
+
+                    else
+                        acc
+                )
+                0
+                exps
+    in
+    toFloat correctCount / toFloat totalCount * 100 |> round
+
+
 displayValue : Maybe Expression -> String
 displayValue mbExp =
     case mbExp of
