@@ -11,6 +11,7 @@ type alias Expression =
     , arguments : ( Int, Int )
     , variants : List Int
     , answer : Maybe Int
+    , spentTime : Int
     }
 
 
@@ -33,9 +34,10 @@ generate seed operation =
                         |> (::) (expResultOf pair)
                         |> List.filter ((<) 0)
                         |> toUniqueItems
+                        -- review using Random.step
                         |> shacke seed
             in
-            Expression operation pair variants Nothing
+            Expression operation pair variants Nothing 0
     in
     Random.map toExp pairGen
 

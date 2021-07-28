@@ -1,6 +1,7 @@
 module Page.Root exposing (RootPgModel, RootPgMsg, init, subscriptions, update, view)
 
 import Bootstrap.Button as Btn
+import Bootstrap.Carousel exposing (Msg)
 import Bootstrap.Form as Form
 import Bootstrap.Form.Input as Input
 import Bootstrap.Form.Select as Select
@@ -11,14 +12,15 @@ import Bootstrap.Table as Table exposing (TBody(..))
 import Browser.Navigation exposing (Key)
 import Common.Route as Route
 import Dict
-import Feature.Expression exposing (Expression, answeredAndCorrectly, correctPercents, displayValue)
+import Feature.Expression exposing (Expression, answeredAndCorrectly, correctPercents, displayValue, generate)
 import Feature.ExpressionOperation as ExpOperation exposing (Operation(..))
-import Html exposing (Html, div, h1, h2, label, li, text, ul)
-import Html.Attributes exposing (class, disabled, type_, value)
-import Html.Events exposing (onSubmit)
+import Html exposing (Html, div, h1, h2, img, input, label, li, node, text, ul)
+import Html.Attributes exposing (class, disabled, src, style, type_, value)
+import Html.Events exposing (on, onSubmit)
+import Json.Decode as Decode
 import Process
 import Random
-import Task
+import Task exposing (Task)
 import Time
 import Url exposing (Url)
 import Util.List
@@ -30,8 +32,8 @@ import Util.List
 
 type alias RootPgModel =
     { route : Route.RouteModel
-    , currentTime : Time.Posix
-    , currentTimeSeed : Random.Seed
+    , timeMark : Int
+    , timeMarkSeed : Random.Seed
     , operation : Operation
     , expressions : List Expression
     , currExpression : Maybe Expression
@@ -43,8 +45,8 @@ type alias RootPgModel =
 init : Url -> Key -> RootPgModel
 init _ key =
     { route = Route.init key
-    , currentTime = Time.millisToPosix 0
-    , currentTimeSeed = Random.initialSeed 0
+    , timeMark = 0
+    , timeMarkSeed = Random.initialSeed 0
     , operation = Addition
     , expressions = []
     , currExpression = Nothing
@@ -58,31 +60,33 @@ init _ key =
 
 
 type RootPgMsg
-    = GotTime Time.Posix
-    | SelectOperation String
-    | TypedText String
+    = LoadedView
+    | GotTime Int
+    | SelectedOperation String
     | GenerateExpressions
     | NewExpressions (List Expression)
+    | TypedText String
     | Answer Int
+    | AnswerWithTime Int Int
     | NextExpression
 
 
 update : RootPgMsg -> RootPgModel -> ( RootPgModel, Cmd RootPgMsg )
 update msg model =
     case msg of
+        LoadedView ->
+            ( model, getTime )
+
         GotTime time ->
             ( { model
-                | currentTime = time
-                , currentTimeSeed = Random.initialSeed (Time.posixToMillis time)
+                | timeMark = time
+                , timeMarkSeed = Random.initialSeed time
               }
             , Cmd.none
             )
 
-        SelectOperation operation ->
+        SelectedOperation operation ->
             ( { model | operation = ExpOperation.fromString operation }, Cmd.none )
-
-        TypedText _ ->
-            ( model, Cmd.none )
 
         GenerateExpressions ->
             ( model, generateExpressions model )
@@ -93,15 +97,30 @@ update msg model =
                 , currExpression = List.head exps
                 , answered = False
               }
-            , Cmd.none
+            , getTime
             )
 
+        TypedText _ ->
+            -- prevent changes
+            ( model, Cmd.none )
+
         Answer answer ->
+            ( model
+            , Time.now
+                |> Task.map Time.posixToMillis
+                |> Task.perform (AnswerWithTime answer)
+            )
+
+        AnswerWithTime answer time ->
             let
                 newCurrExp =
                     case model.currExpression of
                         Just currExp ->
-                            Just { currExp | answer = Just answer }
+                            Just
+                                { currExp
+                                    | answer = Just answer
+                                    , spentTime = time - model.timeMark
+                                }
 
                         Nothing ->
                             model.currExpression
@@ -127,7 +146,11 @@ update msg model =
                 mbNewCurrExp =
                     case mbCurrExp of
                         Just currExp ->
-                            Just { currExp | variants = Util.List.shacke model.currentTimeSeed currExp.variants }
+                            Just
+                                { currExp
+                                    | variants =
+                                        Util.List.shacke model.timeMarkSeed currExp.variants
+                                }
 
                         Nothing ->
                             mbCurrExp
@@ -149,8 +172,15 @@ update msg model =
                 , answeringIsDisabled = False
                 , answered = answered
               }
-            , Cmd.none
+            , getTime
             )
+
+
+getTime : Cmd RootPgMsg
+getTime =
+    Time.now
+        |> Task.map Time.posixToMillis
+        |> Task.perform GotTime
 
 
 updateCurrExp : Maybe Expression -> Maybe Expression -> List Expression -> ( Maybe Expression, List Expression )
@@ -169,7 +199,7 @@ updateCurrExp mbOld mbNew exps =
                 exps
             )
 
-        ( _, _ ) ->
+        _ ->
             ( mbOld, exps )
 
 
@@ -183,16 +213,34 @@ nextExpression mbCurrExp expressions =
             else
                 nextExpression mbCurrExp exps
 
-        ( _, _ ) ->
+        _ ->
             Nothing
 
 
 generateExpressions : RootPgModel -> Cmd RootPgMsg
 generateExpressions model =
-    Feature.Expression.generate model.currentTimeSeed model.operation
+    generate model.timeMarkSeed model.operation
         |> Random.list 10
-        |> Random.andThen (\exps -> filterUniqueExps exps |> Random.constant)
+        |> Random.map filterUniqueExps
         |> Random.generate NewExpressions
+
+
+
+-- generateExpressions : RootPgModel -> Cmd RootPgMsg
+-- generateExpressions model =
+--     Time.now
+--         |> Task.map
+--             (\pos ->
+--                 (Time.posixToMillis pos
+--                     |> Random.initialSeed
+--                     |> generate
+--                 )
+--                     model.operation
+--                     |> Random.list 10
+--                     |> Random.map filterUniqueExps
+--                     |> Random.generate NewExpressions
+--             )
+--         |> Task.perform (always GenerateExpressions)
 
 
 filterUniqueExps : List Expression -> List Expression
@@ -206,7 +254,8 @@ filterUniqueExps exps =
 
 subscriptions : a -> Sub RootPgMsg
 subscriptions _ =
-    Time.every 1000 GotTime
+    -- Time.every 1000 GotTime
+    Sub.none
 
 
 
@@ -216,7 +265,8 @@ subscriptions _ =
 view : RootPgModel -> Html RootPgMsg
 view model =
     Grid.container []
-        [ div [ class "page-header" ]
+        [ fakeImg
+        , div [ class "page-header" ]
             [ h1 []
                 [ text "Unit #1" ]
             ]
@@ -226,7 +276,7 @@ view model =
                     [ Form.col [ Col.xsAuto ]
                         [ label []
                             [ Select.select
-                                [ Select.onChange SelectOperation
+                                [ Select.onChange SelectedOperation
                                 , Select.attrs [ disabled <| answering model ]
                                 ]
                                 [ Select.item [ Addition |> ExpOperation.toString |> value ] [ text "Addition" ]
@@ -265,6 +315,22 @@ view model =
         , div []
             [ resultTable model ]
         ]
+
+
+
+-- fakeImg is a workaround to get ViewLoaded
+
+
+fakeImg : Html.Html RootPgMsg
+fakeImg =
+    img
+        [ style "visibility" "hidden"
+        , style "height" "0"
+        , style "width" "0"
+        , src "/assets/img/favicon.ico"
+        , on "load" <| Decode.succeed LoadedView
+        ]
+        []
 
 
 renderWhenAnswering :
@@ -339,7 +405,7 @@ variantList model =
                                 , Btn.large
                                 , Btn.attrs [ type_ "button" ]
                                 , Btn.disabled model.answeringIsDisabled
-                                , Btn.onClick (Answer var)
+                                , Btn.onClick <| Answer var
                                 ]
                                 [ text <| String.fromInt var ]
                             ]
@@ -370,7 +436,7 @@ resultTable model =
                             []
                             [ Table.td [] [ idx |> (+) 1 |> String.fromInt |> text ]
                             , Table.td [] [ Just exp |> displayValue |> text ]
-                            , Table.td [] [ text "-" ]
+                            , Table.td [] [ toFloat exp.spentTime / 1000 |> String.fromFloat |> text ]
                             ]
                 )
                 model.expressions
@@ -386,7 +452,13 @@ resultTable model =
                             , text "% of correct answers"
                             ]
                         , Table.td []
-                            [ text "-" ]
+                            [ List.map (\exp -> exp.spentTime) model.expressions
+                                |> List.sum
+                                |> toFloat
+                                |> (*) 0.001
+                                |> String.fromFloat
+                                |> text
+                            ]
                         ]
                     ]
     in
