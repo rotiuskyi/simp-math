@@ -1,5 +1,6 @@
 module Feature.Expression exposing (..)
 
+import Dict exposing (Dict)
 import Feature.ExpressionOperation exposing (Operation(..))
 import Random exposing (Generator, Seed)
 import Tuple exposing (pair)
@@ -40,6 +41,11 @@ generate seed operation =
             Expression operation pair variants Nothing 0
     in
     Random.map toExp pairGen
+
+
+uniqueByArguments : List Expression -> List Expression
+uniqueByArguments exps =
+    List.foldl (\exp dict -> Dict.insert exp.arguments exp dict) Dict.empty exps |> Dict.values
 
 
 result : Operation -> ( Int, Int ) -> Int

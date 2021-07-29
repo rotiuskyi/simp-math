@@ -10,8 +10,15 @@ import Bootstrap.Grid.Row as Row
 import Bootstrap.Table as Table exposing (TBody(..))
 import Browser.Navigation exposing (Key)
 import Common.Route as Route
-import Dict
-import Feature.Expression exposing (Expression, answeredAndCorrectly, correctPercents, displayValue, generate)
+import Feature.Expression
+    exposing
+        ( Expression
+        , answeredAndCorrectly
+        , correctPercents
+        , displayValue
+        , generate
+        , uniqueByArguments
+        )
 import Feature.ExpressionOperation as ExpOperation exposing (Operation(..))
 import Html exposing (Html, div, h1, h2, label, li, text, ul)
 import Html.Attributes exposing (class, disabled, type_, value)
@@ -217,31 +224,8 @@ generateExpressions : RootPgModel -> Cmd RootPgMsg
 generateExpressions model =
     generate model.timeMarkSeed model.operation
         |> Random.list 10
-        |> Random.map filterUniqueExps
+        |> Random.map uniqueByArguments
         |> Random.generate NewExpressions
-
-
-
--- generateExpressions : RootPgModel -> Cmd RootPgMsg
--- generateExpressions model =
---     Time.now
---         |> Task.map
---             (\pos ->
---                 (Time.posixToMillis pos
---                     |> Random.initialSeed
---                     |> generate
---                 )
---                     model.operation
---                     |> Random.list 10
---                     |> Random.map filterUniqueExps
---                     |> Random.generate NewExpressions
---             )
---         |> Task.perform (always GenerateExpressions)
-
-
-filterUniqueExps : List Expression -> List Expression
-filterUniqueExps exps =
-    List.foldl (\exp dict -> Dict.insert exp.arguments exp dict) Dict.empty exps |> Dict.values
 
 
 
@@ -250,7 +234,6 @@ filterUniqueExps exps =
 
 subscriptions : a -> Sub RootPgMsg
 subscriptions _ =
-    -- Time.every 1000 GotTime
     Sub.none
 
 
