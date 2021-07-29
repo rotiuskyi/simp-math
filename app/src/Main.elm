@@ -21,18 +21,19 @@ type Model
 
 init : () -> Url -> Key -> ( Model, Cmd Msg )
 init _ url key =
-    ( let
-        route =
-            Route.fromUrl url
-      in
-      case route of
+    case Route.fromUrl url of
         Nothing ->
-            Page.NotFound.init key |> NotFound
+            Page.NotFound.init key
+                |> withMapBy identity NotFound
 
         Just Route.Root ->
-            Page.Root.init url key |> Root
-    , Cmd.none
-    )
+            Page.Root.init url key
+                |> withMapBy GotRootPgMsg Root
+
+
+withMapBy : (a -> Msg) -> (b -> Model) -> ( b, Cmd a ) -> ( Model, Cmd Msg )
+withMapBy toMsg toModel ( subModel, subCmd ) =
+    ( toModel subModel, Cmd.map toMsg subCmd )
 
 
 
@@ -67,7 +68,7 @@ update msg model =
                     ( model, load href )
 
         ( GotRootPgMsg rootMsg, Root rootModel ) ->
-            Page.Root.update rootMsg rootModel |> updateWith GotRootPgMsg Root
+            Page.Root.update rootMsg rootModel |> withMapBy GotRootPgMsg Root
 
         ( _, _ ) ->
             ( model, Cmd.none )
@@ -83,23 +84,13 @@ toRouteModel model =
             nfModel
 
 
-updateWith : (a -> Msg) -> (b -> Model) -> ( b, Cmd a ) -> ( Model, Cmd Msg )
-updateWith toMsg toModel ( subModel, subCmd ) =
-    ( toModel subModel, Cmd.map toMsg subCmd )
-
-
 
 -- subscriptions
 
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Page.Root.subscriptions model |> subscriptionsWith GotRootPgMsg
-
-
-subscriptionsWith : (a -> Msg) -> Sub a -> Sub Msg
-subscriptionsWith toMsg subMsg =
-    Sub.map toMsg subMsg
+    Page.Root.subscriptions model |> Sub.map GotRootPgMsg
 
 
 

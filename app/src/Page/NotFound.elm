@@ -9,9 +9,9 @@ type alias NotFoundPgModel =
     Route.RouteModel
 
 
-init : Key -> NotFoundPgModel
+init : Key -> ( NotFoundPgModel, Cmd msg )
 init key =
-    Route.init key
+    ( Route.init key, Cmd.none )
 
 
 view : Html msg

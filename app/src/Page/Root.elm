@@ -1,7 +1,6 @@
 module Page.Root exposing (RootPgModel, RootPgMsg, init, subscriptions, update, view)
 
 import Bootstrap.Button as Btn
-import Bootstrap.Carousel exposing (Msg)
 import Bootstrap.Form as Form
 import Bootstrap.Form.Input as Input
 import Bootstrap.Form.Select as Select
@@ -14,13 +13,12 @@ import Common.Route as Route
 import Dict
 import Feature.Expression exposing (Expression, answeredAndCorrectly, correctPercents, displayValue, generate)
 import Feature.ExpressionOperation as ExpOperation exposing (Operation(..))
-import Html exposing (Html, div, h1, h2, img, input, label, li, node, text, ul)
-import Html.Attributes exposing (class, disabled, src, style, type_, value)
-import Html.Events exposing (on, onSubmit)
-import Json.Decode as Decode
+import Html exposing (Html, div, h1, h2, label, li, text, ul)
+import Html.Attributes exposing (class, disabled, type_, value)
+import Html.Events exposing (onSubmit)
 import Process
 import Random
-import Task exposing (Task)
+import Task
 import Time
 import Url exposing (Url)
 import Util.List
@@ -42,17 +40,19 @@ type alias RootPgModel =
     }
 
 
-init : Url -> Key -> RootPgModel
+init : Url -> Key -> ( RootPgModel, Cmd RootPgMsg )
 init _ key =
-    { route = Route.init key
-    , timeMark = 0
-    , timeMarkSeed = Random.initialSeed 0
-    , operation = Addition
-    , expressions = []
-    , currExpression = Nothing
-    , answeringIsDisabled = False
-    , answered = False
-    }
+    ( { route = Route.init key
+      , timeMark = 0
+      , timeMarkSeed = Random.initialSeed 0
+      , operation = Addition
+      , expressions = []
+      , currExpression = Nothing
+      , answeringIsDisabled = False
+      , answered = False
+      }
+    , getTime
+    )
 
 
 
@@ -60,8 +60,7 @@ init _ key =
 
 
 type RootPgMsg
-    = LoadedView
-    | GotTime Int
+    = GotTime Int
     | SelectedOperation String
     | GenerateExpressions
     | NewExpressions (List Expression)
@@ -74,9 +73,6 @@ type RootPgMsg
 update : RootPgMsg -> RootPgModel -> ( RootPgModel, Cmd RootPgMsg )
 update msg model =
     case msg of
-        LoadedView ->
-            ( model, getTime )
-
         GotTime time ->
             ( { model
                 | timeMark = time
@@ -265,8 +261,7 @@ subscriptions _ =
 view : RootPgModel -> Html RootPgMsg
 view model =
     Grid.container []
-        [ fakeImg
-        , div [ class "page-header" ]
+        [ div [ class "page-header" ]
             [ h1 []
                 [ text "Unit #1" ]
             ]
@@ -315,22 +310,6 @@ view model =
         , div []
             [ resultTable model ]
         ]
-
-
-
--- fakeImg is a workaround to get ViewLoaded
-
-
-fakeImg : Html.Html RootPgMsg
-fakeImg =
-    img
-        [ style "visibility" "hidden"
-        , style "height" "0"
-        , style "width" "0"
-        , src "/assets/img/favicon.ico"
-        , on "load" <| Decode.succeed LoadedView
-        ]
-        []
 
 
 renderWhenAnswering :
