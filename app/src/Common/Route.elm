@@ -2,6 +2,7 @@ module Common.Route exposing (..)
 
 import Browser.Navigation
 import Url exposing (Url)
+import Url.Parser exposing ((</>), Parser, map, oneOf, parse, top)
 
 
 type alias RouteModel =
@@ -9,20 +10,22 @@ type alias RouteModel =
     }
 
 
-type Route
-    = Root
-    | NotFound
-
-
 init : Browser.Navigation.Key -> RouteModel
 init key =
     { navKey = key }
 
 
-fromUrl : Url -> Route
-fromUrl { path } =
-    if path == "/" then
-        Root
+type Route
+    = Root
 
-    else
-        NotFound
+
+parser : Parser (Route -> a) a
+parser =
+    oneOf
+        [ map Root top
+        ]
+
+
+fromUrl : Url -> Maybe Route
+fromUrl url =
+    parse parser url

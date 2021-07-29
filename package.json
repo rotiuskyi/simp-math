@@ -16,6 +16,7 @@
     "sass": "^1.36.0"
   },
   "scripts": {
-    "start": "cp -R app/assets dist && parcel app/index.html"
+    "start": "cp -R app/assets dist && parcel app/index.html",
+    "build": "rm -rf dist && cp -R app/assets dist && parcel build app/index.html"
   }
 }

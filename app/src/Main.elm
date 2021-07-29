@@ -26,10 +26,10 @@ init _ url key =
             Route.fromUrl url
       in
       case route of
-        Route.NotFound ->
+        Nothing ->
             Page.NotFound.init key |> NotFound
 
-        Route.Root ->
+        Just Route.Root ->
             Page.Root.init url key |> Root
     , Cmd.none
     )
