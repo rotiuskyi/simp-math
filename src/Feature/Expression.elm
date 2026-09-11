@@ -1,6 +1,7 @@
 module Feature.Expression exposing (..)
 
 import Dict exposing (Dict)
+import Feature.ExpressionLevel exposing (Level, argumentRange)
 import Feature.ExpressionOperation exposing (Operation(..))
 import Random exposing (Generator, Seed)
 import Tuple exposing (pair)
@@ -16,11 +17,14 @@ type alias Expression =
     }
 
 
-generate : Seed -> Operation -> Generator Expression
-generate seed operation =
+generate : Seed -> Level -> Operation -> Generator Expression
+generate seed level operation =
     let
+        ( minArg, maxArg ) =
+            argumentRange level
+
         intGen =
-            Random.int 1 5
+            Random.int minArg maxArg
 
         pairGen =
             Random.pair intGen intGen

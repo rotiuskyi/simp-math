@@ -31,6 +31,13 @@
   background-color: var(--light);
 }
 
+.logo-box__title {
+  margin-left: 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--white);
+}
+
 /* root page */
 
 .expression-input {

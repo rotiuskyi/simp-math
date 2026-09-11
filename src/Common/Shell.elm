@@ -1,6 +1,6 @@
 module Common.Shell exposing (view)
 
-import Html exposing (Html, div, img, small, text)
+import Html exposing (Html, div, img, small, span, text)
 import Html.Attributes exposing (class, src)
 
 
@@ -9,6 +9,7 @@ header =
     div [ class "shell__header" ]
         [ div [ class "container logo-box" ]
             [ img [ class "logo-box__logo", src "assets/favicon.ico" ] []
+            , span [ class "logo-box__title" ] [ text "Simple Math" ]
             ]
         ]
 

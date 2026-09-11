@@ -19,8 +19,9 @@ import Feature.Expression
         , generate
         , uniqueByArguments
         )
+import Feature.ExpressionLevel as ExpLevel exposing (Level(..))
 import Feature.ExpressionOperation as ExpOperation exposing (Operation(..))
-import Html exposing (Html, div, h1, h2, label, li, text, ul)
+import Html exposing (Html, div, h2, label, li, text, ul)
 import Html.Attributes exposing (class, disabled, type_, value)
 import Html.Events exposing (onSubmit)
 import Process
@@ -39,6 +40,7 @@ type alias RootPgModel =
     { route : Route.RouteModel
     , timeMark : Int
     , timeMarkSeed : Random.Seed
+    , level : Level
     , operation : Operation
     , expressions : List Expression
     , currExpression : Maybe Expression
@@ -52,6 +54,7 @@ init _ key =
     ( { route = Route.init key
       , timeMark = 0
       , timeMarkSeed = Random.initialSeed 0
+      , level = Level1
       , operation = Addition
       , expressions = []
       , currExpression = Nothing
@@ -68,6 +71,7 @@ init _ key =
 
 type RootPgMsg
     = GotTime Int
+    | SelectedLevel String
     | SelectedOperation String
     | GenerateExpressions
     | NewExpressions (List Expression)
@@ -87,6 +91,9 @@ update msg model =
               }
             , Cmd.none
             )
+
+        SelectedLevel level ->
+            ( { model | level = ExpLevel.fromString level }, Cmd.none )
 
         SelectedOperation operation ->
             ( { model | operation = ExpOperation.fromString operation }, Cmd.none )
@@ -222,7 +229,7 @@ nextExpression mbCurrExp expressions =
 
 generateExpressions : RootPgModel -> Cmd RootPgMsg
 generateExpressions model =
-    generate model.timeMarkSeed model.operation
+    generate model.timeMarkSeed model.level model.operation
         |> Random.list 10
         |> Random.map uniqueByArguments
         |> Random.generate NewExpressions
@@ -243,15 +250,22 @@ subscriptions _ =
 
 view : RootPgModel -> Html RootPgMsg
 view model =
-    Grid.container []
-        [ div [ class "page-header" ]
-            [ h1 []
-                [ text "Unit #1" ]
-            ]
-        , div []
+    Grid.container [ class "pt-3" ]
+        [ div []
             [ Form.form [ onSubmit GenerateExpressions ]
-                [ Form.row []
+                [ Form.row [ Row.attrs [ class "form-row" ] ]
                     [ Form.col [ Col.xsAuto ]
+                        [ label []
+                            [ Select.select
+                                [ Select.onChange SelectedLevel
+                                , Select.attrs [ disabled <| answering model ]
+                                ]
+                                [ Select.item [ Level1 |> ExpLevel.toString |> value ] [ text "Level 1" ]
+                                , Select.item [ Level2 |> ExpLevel.toString |> value ] [ text "Level 2" ]
+                                ]
+                            ]
+                        ]
+                    , Form.col [ Col.xsAuto ]
                         [ label []
                             [ Select.select
                                 [ Select.onChange SelectedOperation
