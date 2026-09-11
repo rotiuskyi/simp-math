@@ -8,7 +8,7 @@ header : Html msg
 header =
     div [ class "shell__header" ]
         [ div [ class "container logo-box" ]
-            [ img [ class "logo-box__logo", src "/assets/img/favicon.ico" ] []
+            [ img [ class "logo-box__logo", src "assets/favicon.ico" ] []
             ]
         ]
 

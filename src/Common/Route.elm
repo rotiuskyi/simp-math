@@ -2,7 +2,7 @@ module Common.Route exposing (..)
 
 import Browser.Navigation
 import Url exposing (Url)
-import Url.Parser exposing ((</>), Parser, map, oneOf, parse, top)
+import Url.Parser exposing ((</>), Parser, map, oneOf, parse, s, top)
 
 
 type alias RouteModel =
@@ -23,9 +23,12 @@ parser : Parser (Route -> a) a
 parser =
     oneOf
         [ map Root top
+        , map Root (s "index.html")
         ]
 
 
+{-| GitHub Pages serves the app under /simp-math/, locally it is served from the root.
+-}
 fromUrl : Url -> Maybe Route
 fromUrl url =
-    parse parser url
+    parse (oneOf [ parser, s "simp-math" </> parser ]) url

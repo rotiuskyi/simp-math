@@ -1,0 +1,49 @@
+/* shell */
+
+.shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.shell__header {
+  height: 50px;
+  background-color: var(--cyan);
+}
+
+.shell__content {
+  flex-grow: 1;
+}
+
+.shell__footer {
+  height: 50px;
+  background-color: var(--light);
+}
+
+.logo-box {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.logo-box__logo {
+  height: 32px;
+  background-color: var(--light);
+}
+
+/* root page */
+
+.expression-input {
+  text-align: center;
+}
+
+.variant-list {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.variant-list__item {
+  padding: 0 0.5rem;
+}
