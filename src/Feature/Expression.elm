@@ -3,9 +3,9 @@ module Feature.Expression exposing (..)
 import Dict exposing (Dict)
 import Feature.ExpressionLevel exposing (Level, argumentRange)
 import Feature.ExpressionOperation exposing (Operation(..))
-import Random exposing (Generator, Seed)
+import Random exposing (Generator)
 import Tuple exposing (pair)
-import Util.List exposing (shacke, toUniqueItems)
+import Util.List exposing (shuffle, unique)
 
 
 type alias Expression =
@@ -17,8 +17,8 @@ type alias Expression =
     }
 
 
-generate : Seed -> Level -> Operation -> Generator Expression
-generate seed level operation =
+generate : Level -> Operation -> Generator Expression
+generate level operation =
     let
         ( minArg, maxArg ) =
             argumentRange level
@@ -26,25 +26,129 @@ generate seed level operation =
         intGen =
             Random.int minArg maxArg
 
-        pairGen =
-            Random.pair intGen intGen
-
-        expResultOf =
-            result operation
-
-        toExp pair =
-            let
-                variants =
-                    List.range (expResultOf pair - 2) (expResultOf pair + 2)
-                        |> (::) (expResultOf pair)
-                        |> List.filter ((<) 0)
-                        |> toUniqueItems
-                        -- review using Random.step
-                        |> shacke seed
-            in
-            Expression operation pair variants Nothing 0
+        toExp arguments variants =
+            Expression operation arguments variants Nothing 0
     in
-    Random.map toExp pairGen
+    Random.pair intGen intGen
+        |> Random.andThen
+            (\arguments -> Random.map (toExp arguments) (generateVariants operation arguments))
+
+
+variantCount : Int
+variantCount =
+    5
+
+
+{-| Sorted answer variants: the correct answer and wrong ones taken from `mistakeTiers`.
+The position of the correct answer among the variants is random,
+so it can't be guessed as e.g. the middle one.
+-}
+generateVariants : Operation -> ( Int, Int ) -> Generator (List Int)
+generateVariants operation arguments =
+    let
+        answer =
+            result operation arguments
+
+        pickVariants mistakes =
+            let
+                below =
+                    List.filter ((>) answer) mistakes
+
+                above =
+                    List.filter ((<) answer) mistakes
+
+                toVariants belowCount =
+                    List.take belowCount below
+                        ++ answer
+                        :: List.take (variantCount - 1 - belowCount) above
+                        |> List.sort
+            in
+            case
+                List.range 0 (variantCount - 1)
+                    |> List.filter (\n -> n <= List.length below && variantCount - 1 - n <= List.length above)
+            of
+                first :: rest ->
+                    Random.uniform first rest |> Random.map toVariants
+
+                [] ->
+                    Random.constant <| List.sort (answer :: List.take (variantCount - 1) mistakes)
+    in
+    mistakeTiers operation arguments
+        |> List.map (preferSameParity operation answer >> shuffleTier)
+        |> List.foldr (Random.map2 (++)) (Random.constant [])
+        |> Random.map (unique >> List.filter (\x -> x > 0 && x /= answer))
+        |> Random.andThen pickVariants
+
+
+shuffleTier : ( List Int, List Int ) -> Generator (List Int)
+shuffleTier ( preferred, rest ) =
+    Random.map2 (++) (shuffle preferred) (shuffle rest)
+
+
+{-| For multiplication, wrong answers with a different parity are easy to reject
+(e.g. 7 · 8 can't be odd), so they go after the ones with the same parity.
+-}
+preferSameParity : Operation -> Int -> List Int -> ( List Int, List Int )
+preferSameParity operation answer tier =
+    case operation of
+        Multiplication ->
+            List.partition (\x -> modBy 2 x == modBy 2 answer) tier
+
+        _ ->
+            ( tier, [] )
+
+
+{-| Wrong answers grouped by how typical the mistake is, most typical first.
+-}
+mistakeTiers : Operation -> ( Int, Int ) -> List (List Int)
+mistakeTiers operation ( a, b ) =
+    let
+        answer =
+            result operation ( a, b )
+    in
+    case operation of
+        Multiplication ->
+            [ -- neighbours in the multiplication table
+              [ (a - 1) * b, (a + 1) * b, a * (b - 1), a * (b + 1) ]
+            , -- the same last digit
+              if answer >= 20 then
+                [ answer - 10, answer + 10 ]
+
+              else
+                []
+            , -- swapped digits: 56 -> 65
+              swappedDigits answer
+            , [ answer - 2, answer + 2, answer - 1, answer + 1 ]
+            , -- reserve for small answers like 1 · 1
+              [ answer - 4, answer - 3 ] ++ List.range (answer + 3) (answer + 6)
+            ]
+
+        _ ->
+            [ [ answer - 1, answer + 1 ]
+            , [ answer - 2, answer + 2 ]
+            , -- forgot to carry the ten: 7 + 8 -> 5
+              if answer > 10 then
+                [ answer - 10 ]
+
+              else
+                []
+            , [ answer - 3, answer + 3 ]
+            , -- reserve for small answers like 1 + 1
+              answer - 4 :: List.range (answer + 4) (answer + 6)
+            ]
+
+
+swappedDigits : Int -> List Int
+swappedDigits n =
+    if n > 9 && modBy 10 n /= 0 then
+        String.fromInt n
+            |> String.reverse
+            |> String.toInt
+            |> Maybe.map List.singleton
+            |> Maybe.withDefault []
+
+    else
+        []
 
 
 uniqueByArguments : List Expression -> List Expression

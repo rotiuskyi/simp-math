@@ -784,11 +784,11 @@ function _Debug_crash_UNUSED(identifier, fact1, fact2, fact3, fact4)
 
 function _Debug_regionToString(region)
 {
-	if (region.ch.al === region.cy.al)
+	if (region.cg.al === region.cx.al)
 	{
-		return 'on line ' + region.ch.al;
+		return 'on line ' + region.cg.al;
 	}
-	return 'on lines ' + region.ch.al + ' through ' + region.cy.al;
+	return 'on lines ' + region.cg.al + ' through ' + region.cx.al;
 }
 
 
@@ -1857,9 +1857,9 @@ var _Platform_worker = F4(function(impl, flagDecoder, debugMetadata, args)
 	return _Platform_initialize(
 		flagDecoder,
 		args,
-		impl.dp,
-		impl.dD,
-		impl.dA,
+		impl.$7,
+		impl.dC,
+		impl.dz,
 		function() { return function() {} }
 	);
 });
@@ -2705,8 +2705,8 @@ var _VirtualDom_mapEventRecord = F2(function(func, record)
 {
 	return {
 		z: func(record.z),
-		cj: record.cj,
-		cd: record.cd
+		ci: record.ci,
+		cc: record.cc
 	}
 });
 
@@ -2975,10 +2975,10 @@ function _VirtualDom_makeCallback(eventNode, initialHandler)
 
 		var value = result.a;
 		var message = !tag ? value : tag < 3 ? value.a : value.z;
-		var stopPropagation = tag == 1 ? value.b : tag == 3 && value.cj;
+		var stopPropagation = tag == 1 ? value.b : tag == 3 && value.ci;
 		var currentEventNode = (
 			stopPropagation && event.stopPropagation(),
-			(tag == 2 ? value.b : tag == 3 && value.cd) && event.preventDefault(),
+			(tag == 2 ? value.b : tag == 3 && value.cc) && event.preventDefault(),
 			eventNode
 		);
 		var tagger;
@@ -3928,11 +3928,11 @@ var _Browser_element = _Debugger_element || F4(function(impl, flagDecoder, debug
 	return _Platform_initialize(
 		flagDecoder,
 		args,
-		impl.dp,
-		impl.dD,
-		impl.dA,
+		impl.$7,
+		impl.dC,
+		impl.dz,
 		function(sendToApp, initialModel) {
-			var view = impl.dF;
+			var view = impl.dE;
 			/**/
 			var domNode = args['node'];
 			//*/
@@ -3964,12 +3964,12 @@ var _Browser_document = _Debugger_document || F4(function(impl, flagDecoder, deb
 	return _Platform_initialize(
 		flagDecoder,
 		args,
-		impl.dp,
-		impl.dD,
-		impl.dA,
+		impl.$7,
+		impl.dC,
+		impl.dz,
 		function(sendToApp, initialModel) {
-			var divertHrefToApp = impl.cg && impl.cg(sendToApp)
-			var view = impl.dF;
+			var divertHrefToApp = impl.cf && impl.cf(sendToApp)
+			var view = impl.dE;
 			var title = _VirtualDom_doc.title;
 			var bodyNode = _VirtualDom_doc.body;
 			var currNode = _VirtualDom_virtualize(bodyNode);
@@ -3977,12 +3977,12 @@ var _Browser_document = _Debugger_document || F4(function(impl, flagDecoder, deb
 			{
 				_VirtualDom_divertHrefToApp = divertHrefToApp;
 				var doc = view(model);
-				var nextNode = _VirtualDom_node('body')(_List_Nil)(doc.cq);
+				var nextNode = _VirtualDom_node('body')(_List_Nil)(doc.cp);
 				var patches = _VirtualDom_diff(currNode, nextNode);
 				bodyNode = _VirtualDom_applyPatches(bodyNode, currNode, patches, sendToApp);
 				currNode = nextNode;
 				_VirtualDom_divertHrefToApp = 0;
-				(title !== doc.c3) && (_VirtualDom_doc.title = title = doc.c3);
+				(title !== doc.c2) && (_VirtualDom_doc.title = title = doc.c2);
 			});
 		}
 	);
@@ -4038,12 +4038,12 @@ function _Browser_makeAnimator(model, draw)
 
 function _Browser_application(impl)
 {
-	var onUrlChange = impl.ds;
-	var onUrlRequest = impl.dt;
+	var onUrlChange = impl.dr;
+	var onUrlRequest = impl.ds;
 	var key = function() { key.a(onUrlChange(_Browser_getUrl())); };
 
 	return _Browser_document({
-		cg: function(sendToApp)
+		cf: function(sendToApp)
 		{
 			key.a = sendToApp;
 			_Browser_window.addEventListener('popstate', key);
@@ -4059,9 +4059,9 @@ function _Browser_application(impl)
 					var next = $elm$url$Url$fromString(href).a;
 					sendToApp(onUrlRequest(
 						(next
-							&& curr.cW === next.cW
-							&& curr.cC === next.cC
-							&& curr.cS.a === next.cS.a
+							&& curr.cV === next.cV
+							&& curr.cB === next.cB
+							&& curr.cR.a === next.cR.a
 						)
 							? $elm$browser$Browser$Internal(next)
 							: $elm$browser$Browser$External(href)
@@ -4069,13 +4069,13 @@ function _Browser_application(impl)
 				}
 			});
 		},
-		dp: function(flags)
+		$7: function(flags)
 		{
-			return A3(impl.dp, flags, _Browser_getUrl(), key);
+			return A3(impl.$7, flags, _Browser_getUrl(), key);
 		},
-		dF: impl.dF,
-		dD: impl.dD,
-		dA: impl.dA
+		dE: impl.dE,
+		dC: impl.dC,
+		dz: impl.dz
 	});
 }
 
@@ -4141,17 +4141,17 @@ var _Browser_decodeEvent = F2(function(decoder, event)
 function _Browser_visibilityInfo()
 {
 	return (typeof _VirtualDom_doc.hidden !== 'undefined')
-		? { dm: 'hidden', df: 'visibilitychange' }
+		? { dl: 'hidden', de: 'visibilitychange' }
 		:
 	(typeof _VirtualDom_doc.mozHidden !== 'undefined')
-		? { dm: 'mozHidden', df: 'mozvisibilitychange' }
+		? { dl: 'mozHidden', de: 'mozvisibilitychange' }
 		:
 	(typeof _VirtualDom_doc.msHidden !== 'undefined')
-		? { dm: 'msHidden', df: 'msvisibilitychange' }
+		? { dl: 'msHidden', de: 'msvisibilitychange' }
 		:
 	(typeof _VirtualDom_doc.webkitHidden !== 'undefined')
-		? { dm: 'webkitHidden', df: 'webkitvisibilitychange' }
-		: { dm: 'hidden', df: 'visibilitychange' };
+		? { dl: 'webkitHidden', de: 'webkitvisibilitychange' }
+		: { dl: 'hidden', de: 'visibilitychange' };
 }
 
 
@@ -4232,12 +4232,12 @@ var _Browser_call = F2(function(functionName, id)
 function _Browser_getViewport()
 {
 	return {
-		c$: _Browser_getScene(),
-		c9: {
-			db: _Browser_window.pageXOffset,
-			dc: _Browser_window.pageYOffset,
-			da: _Browser_doc.documentElement.clientWidth,
-			cB: _Browser_doc.documentElement.clientHeight
+		c_: _Browser_getScene(),
+		c8: {
+			da: _Browser_window.pageXOffset,
+			db: _Browser_window.pageYOffset,
+			c9: _Browser_doc.documentElement.clientWidth,
+			cA: _Browser_doc.documentElement.clientHeight
 		}
 	};
 }
@@ -4247,8 +4247,8 @@ function _Browser_getScene()
 	var body = _Browser_doc.body;
 	var elem = _Browser_doc.documentElement;
 	return {
-		da: Math.max(body.scrollWidth, body.offsetWidth, elem.scrollWidth, elem.offsetWidth, elem.clientWidth),
-		cB: Math.max(body.scrollHeight, body.offsetHeight, elem.scrollHeight, elem.offsetHeight, elem.clientHeight)
+		c9: Math.max(body.scrollWidth, body.offsetWidth, elem.scrollWidth, elem.offsetWidth, elem.clientWidth),
+		cA: Math.max(body.scrollHeight, body.offsetHeight, elem.scrollHeight, elem.offsetHeight, elem.clientHeight)
 	};
 }
 
@@ -4271,15 +4271,15 @@ function _Browser_getViewportOf(id)
 	return _Browser_withNode(id, function(node)
 	{
 		return {
-			c$: {
-				da: node.scrollWidth,
-				cB: node.scrollHeight
+			c_: {
+				c9: node.scrollWidth,
+				cA: node.scrollHeight
 			},
-			c9: {
-				db: node.scrollLeft,
-				dc: node.scrollTop,
-				da: node.clientWidth,
-				cB: node.clientHeight
+			c8: {
+				da: node.scrollLeft,
+				db: node.scrollTop,
+				c9: node.clientWidth,
+				cA: node.clientHeight
 			}
 		};
 	});
@@ -4309,18 +4309,18 @@ function _Browser_getElement(id)
 		var x = _Browser_window.pageXOffset;
 		var y = _Browser_window.pageYOffset;
 		return {
-			c$: _Browser_getScene(),
-			c9: {
-				db: x,
-				dc: y,
-				da: _Browser_doc.documentElement.clientWidth,
-				cB: _Browser_doc.documentElement.clientHeight
+			c_: _Browser_getScene(),
+			c8: {
+				da: x,
+				db: y,
+				c9: _Browser_doc.documentElement.clientWidth,
+				cA: _Browser_doc.documentElement.clientHeight
 			},
-			dj: {
-				db: x + rect.left,
-				dc: y + rect.top,
-				da: rect.width,
-				cB: rect.height
+			di: {
+				da: x + rect.left,
+				db: y + rect.top,
+				c9: rect.width,
+				cA: rect.height
 			}
 		};
 	});
@@ -4965,7 +4965,7 @@ var $elm$url$Url$Http = 0;
 var $elm$url$Url$Https = 1;
 var $elm$url$Url$Url = F6(
 	function (protocol, host, port_, path, query, fragment) {
-		return {cA: fragment, cC: host, cQ: path, cS: port_, cW: protocol, cX: query};
+		return {cz: fragment, cB: host, cP: path, cR: port_, cV: protocol, cW: query};
 	});
 var $elm$core$String$contains = _String_contains;
 var $elm$core$String$length = _String_length;
@@ -5910,9 +5910,9 @@ var $elm$url$Url$Parser$parse = F2(
 				A5(
 					$elm$url$Url$Parser$State,
 					_List_Nil,
-					$elm$url$Url$Parser$preparePath(url.cQ),
-					$elm$url$Url$Parser$prepareQuery(url.cX),
-					url.cA,
+					$elm$url$Url$Parser$preparePath(url.cP),
+					$elm$url$Url$Parser$prepareQuery(url.cW),
+					url.cz,
 					$elm$core$Basics$identity)));
 	});
 var $author$project$Common$Route$Root = 0;
@@ -6011,7 +6011,7 @@ var $author$project$Common$Route$fromUrl = function (url) {
 		url);
 };
 var $author$project$Common$Route$init = function (key) {
-	return {cM: key};
+	return {cL: key};
 };
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
@@ -6047,25 +6047,6 @@ var $author$project$Page$Root$getTime = A2(
 	$elm$core$Task$perform,
 	$author$project$Page$Root$GotTime,
 	A2($elm$core$Task$map, $elm$time$Time$posixToMillis, $elm$time$Time$now));
-var $elm$random$Random$Seed = F2(
-	function (a, b) {
-		return {$: 0, a: a, b: b};
-	});
-var $elm$core$Bitwise$shiftRightZfBy = _Bitwise_shiftRightZfBy;
-var $elm$random$Random$next = function (_v0) {
-	var state0 = _v0.a;
-	var incr = _v0.b;
-	return A2($elm$random$Random$Seed, ((state0 * 1664525) + incr) >>> 0, incr);
-};
-var $elm$random$Random$initialSeed = function (x) {
-	var _v0 = $elm$random$Random$next(
-		A2($elm$random$Random$Seed, 0, 1013904223));
-	var state1 = _v0.a;
-	var incr = _v0.b;
-	var state2 = (state1 + x) >>> 0;
-	return $elm$random$Random$next(
-		A2($elm$random$Random$Seed, state2, incr));
-};
 var $author$project$Page$Root$init = F2(
 	function (_v0, key) {
 		return _Utils_Tuple2(
@@ -6073,12 +6054,11 @@ var $author$project$Page$Root$init = F2(
 				Z: false,
 				_: false,
 				g: $elm$core$Maybe$Nothing,
-				n: _List_Nil,
-				ba: 0,
-				bo: 0,
-				dx: $author$project$Common$Route$init(key),
-				bP: 0,
-				ar: $elm$random$Random$initialSeed(0)
+				s: _List_Nil,
+				a9: 0,
+				bn: 0,
+				dw: $author$project$Common$Route$init(key),
+				bO: 0
 			},
 			$author$project$Page$Root$getTime);
 	});
@@ -6126,7 +6106,7 @@ var $elm$browser$Browser$Navigation$pushUrl = _Browser_pushUrl;
 var $author$project$Main$toRouteModel = function (model) {
 	if (model.$ === 1) {
 		var rootModel = model.a;
-		return rootModel.dx;
+		return rootModel.dw;
 	} else {
 		var nfModel = model.a;
 		return nfModel;
@@ -6154,7 +6134,7 @@ var $elm$url$Url$addPrefixed = F3(
 	});
 var $elm$url$Url$toString = function (url) {
 	var http = function () {
-		var _v0 = url.cW;
+		var _v0 = url.cV;
 		if (!_v0) {
 			return 'http://';
 		} else {
@@ -6164,17 +6144,17 @@ var $elm$url$Url$toString = function (url) {
 	return A3(
 		$elm$url$Url$addPrefixed,
 		'#',
-		url.cA,
+		url.cz,
 		A3(
 			$elm$url$Url$addPrefixed,
 			'?',
-			url.cX,
+			url.cW,
 			_Utils_ap(
 				A2(
 					$elm$url$Url$addPort,
-					url.cS,
-					_Utils_ap(http, url.cC)),
-				url.cQ)));
+					url.cR,
+					_Utils_ap(http, url.cB)),
+				url.cP)));
 };
 var $author$project$Page$Root$AnswerWithTime = F2(
 	function (a, b) {
@@ -6213,7 +6193,20 @@ var $author$project$Page$Root$NewExpressions = function (a) {
 };
 var $author$project$Feature$Expression$Expression = F5(
 	function (operation, _arguments, variants, answer, spentTime) {
-		return {aL: answer, aa: _arguments, bo: operation, dy: spentTime, dE: variants};
+		return {aK: answer, aa: _arguments, bn: operation, dx: spentTime, dD: variants};
+	});
+var $elm$random$Random$Generator = $elm$core$Basics$identity;
+var $elm$random$Random$andThen = F2(
+	function (callback, _v0) {
+		var genA = _v0;
+		return function (seed) {
+			var _v1 = genA(seed);
+			var result = _v1.a;
+			var newSeed = _v1.b;
+			var _v2 = callback(result);
+			var genB = _v2;
+			return genB(newSeed);
+		};
 	});
 var $author$project$Feature$ExpressionLevel$argumentRange = function (level) {
 	if (!level) {
@@ -6221,6 +6214,16 @@ var $author$project$Feature$ExpressionLevel$argumentRange = function (level) {
 	} else {
 		return _Utils_Tuple2(2, 9);
 	}
+};
+var $elm$core$Basics$composeR = F3(
+	function (f, g, x) {
+		return g(
+			f(x));
+	});
+var $elm$random$Random$constant = function (value) {
+	return function (seed) {
+		return _Utils_Tuple2(value, seed);
+	};
 };
 var $elm$core$List$filter = F2(
 	function (isGood, list) {
@@ -6233,10 +6236,179 @@ var $elm$core$List$filter = F2(
 			_List_Nil,
 			list);
 	});
-var $elm$random$Random$Generator = $elm$core$Basics$identity;
-var $elm$core$Bitwise$and = _Bitwise_and;
+var $elm$random$Random$map = F2(
+	function (func, _v0) {
+		var genA = _v0;
+		return function (seed0) {
+			var _v1 = genA(seed0);
+			var a = _v1.a;
+			var seed1 = _v1.b;
+			return _Utils_Tuple2(
+				func(a),
+				seed1);
+		};
+	});
+var $elm$random$Random$map2 = F3(
+	function (func, _v0, _v1) {
+		var genA = _v0;
+		var genB = _v1;
+		return function (seed0) {
+			var _v2 = genA(seed0);
+			var a = _v2.a;
+			var seed1 = _v2.b;
+			var _v3 = genB(seed1);
+			var b = _v3.a;
+			var seed2 = _v3.b;
+			return _Utils_Tuple2(
+				A2(func, a, b),
+				seed2);
+		};
+	});
+var $elm$core$Basics$ge = _Utils_ge;
+var $elm$core$Tuple$second = function (_v0) {
+	var y = _v0.b;
+	return y;
+};
+var $author$project$Feature$Expression$result = F2(
+	function (operation, pair) {
+		switch (operation) {
+			case 0:
+				return pair.a + pair.b;
+			case 1:
+				return pair.a - pair.b;
+			case 2:
+				return pair.a * pair.b;
+			default:
+				return (pair.a / pair.b) | 0;
+		}
+	});
+var $elm$core$Maybe$map = F2(
+	function (f, maybe) {
+		if (!maybe.$) {
+			var value = maybe.a;
+			return $elm$core$Maybe$Just(
+				f(value));
+		} else {
+			return $elm$core$Maybe$Nothing;
+		}
+	});
+var $elm$core$Basics$modBy = _Basics_modBy;
+var $elm$core$Basics$neq = _Utils_notEqual;
+var $elm$core$String$reverse = _String_reverse;
+var $elm$core$List$singleton = function (value) {
+	return _List_fromArray(
+		[value]);
+};
+var $elm$core$Maybe$withDefault = F2(
+	function (_default, maybe) {
+		if (!maybe.$) {
+			var value = maybe.a;
+			return value;
+		} else {
+			return _default;
+		}
+	});
+var $author$project$Feature$Expression$swappedDigits = function (n) {
+	return ((n > 9) && (!(!A2($elm$core$Basics$modBy, 10, n)))) ? A2(
+		$elm$core$Maybe$withDefault,
+		_List_Nil,
+		A2(
+			$elm$core$Maybe$map,
+			$elm$core$List$singleton,
+			$elm$core$String$toInt(
+				$elm$core$String$reverse(
+					$elm$core$String$fromInt(n))))) : _List_Nil;
+};
+var $author$project$Feature$Expression$mistakeTiers = F2(
+	function (operation, _v0) {
+		var a = _v0.a;
+		var b = _v0.b;
+		var answer = A2(
+			$author$project$Feature$Expression$result,
+			operation,
+			_Utils_Tuple2(a, b));
+		if (operation === 2) {
+			return _List_fromArray(
+				[
+					_List_fromArray(
+					[(a - 1) * b, (a + 1) * b, a * (b - 1), a * (b + 1)]),
+					(answer >= 20) ? _List_fromArray(
+					[answer - 10, answer + 10]) : _List_Nil,
+					$author$project$Feature$Expression$swappedDigits(answer),
+					_List_fromArray(
+					[answer - 2, answer + 2, answer - 1, answer + 1]),
+					_Utils_ap(
+					_List_fromArray(
+						[answer - 4, answer - 3]),
+					A2($elm$core$List$range, answer + 3, answer + 6))
+				]);
+		} else {
+			return _List_fromArray(
+				[
+					_List_fromArray(
+					[answer - 1, answer + 1]),
+					_List_fromArray(
+					[answer - 2, answer + 2]),
+					(answer > 10) ? _List_fromArray(
+					[answer - 10]) : _List_Nil,
+					_List_fromArray(
+					[answer - 3, answer + 3]),
+					A2(
+					$elm$core$List$cons,
+					answer - 4,
+					A2($elm$core$List$range, answer + 4, answer + 6))
+				]);
+		}
+	});
+var $elm$core$List$partition = F2(
+	function (pred, list) {
+		var step = F2(
+			function (x, _v0) {
+				var trues = _v0.a;
+				var falses = _v0.b;
+				return pred(x) ? _Utils_Tuple2(
+					A2($elm$core$List$cons, x, trues),
+					falses) : _Utils_Tuple2(
+					trues,
+					A2($elm$core$List$cons, x, falses));
+			});
+		return A3(
+			$elm$core$List$foldr,
+			step,
+			_Utils_Tuple2(_List_Nil, _List_Nil),
+			list);
+	});
+var $author$project$Feature$Expression$preferSameParity = F3(
+	function (operation, answer, tier) {
+		if (operation === 2) {
+			return A2(
+				$elm$core$List$partition,
+				function (x) {
+					return _Utils_eq(
+						A2($elm$core$Basics$modBy, 2, x),
+						A2($elm$core$Basics$modBy, 2, answer));
+				},
+				tier);
+		} else {
+			return _Utils_Tuple2(tier, _List_Nil);
+		}
+	});
 var $elm$core$Basics$negate = function (n) {
 	return -n;
+};
+var $elm$core$Basics$abs = function (n) {
+	return (n < 0) ? (-n) : n;
+};
+var $elm$core$Bitwise$and = _Bitwise_and;
+var $elm$random$Random$Seed = F2(
+	function (a, b) {
+		return {$: 0, a: a, b: b};
+	});
+var $elm$core$Bitwise$shiftRightZfBy = _Bitwise_shiftRightZfBy;
+var $elm$random$Random$next = function (_v0) {
+	var state0 = _v0.a;
+	var incr = _v0.b;
+	return A2($elm$random$Random$Seed, ((state0 * 1664525) + incr) >>> 0, incr);
 };
 var $elm$core$Bitwise$xor = _Bitwise_xor;
 var $elm$random$Random$peel = function (_v0) {
@@ -6244,6 +6416,372 @@ var $elm$random$Random$peel = function (_v0) {
 	var word = (state ^ (state >>> ((state >>> 28) + 4))) * 277803737;
 	return ((word >>> 22) ^ word) >>> 0;
 };
+var $elm$random$Random$float = F2(
+	function (a, b) {
+		return function (seed0) {
+			var seed1 = $elm$random$Random$next(seed0);
+			var range = $elm$core$Basics$abs(b - a);
+			var n1 = $elm$random$Random$peel(seed1);
+			var n0 = $elm$random$Random$peel(seed0);
+			var lo = (134217727 & n1) * 1.0;
+			var hi = (67108863 & n0) * 1.0;
+			var val = ((hi * 134217728.0) + lo) / 9007199254740992.0;
+			var scaled = (val * range) + a;
+			return _Utils_Tuple2(
+				scaled,
+				$elm$random$Random$next(seed1));
+		};
+	});
+var $elm$random$Random$listHelp = F4(
+	function (revList, n, gen, seed) {
+		listHelp:
+		while (true) {
+			if (n < 1) {
+				return _Utils_Tuple2(revList, seed);
+			} else {
+				var _v0 = gen(seed);
+				var value = _v0.a;
+				var newSeed = _v0.b;
+				var $temp$revList = A2($elm$core$List$cons, value, revList),
+					$temp$n = n - 1,
+					$temp$gen = gen,
+					$temp$seed = newSeed;
+				revList = $temp$revList;
+				n = $temp$n;
+				gen = $temp$gen;
+				seed = $temp$seed;
+				continue listHelp;
+			}
+		}
+	});
+var $elm$random$Random$list = F2(
+	function (n, _v0) {
+		var gen = _v0;
+		return function (seed) {
+			return A4($elm$random$Random$listHelp, _List_Nil, n, gen, seed);
+		};
+	});
+var $elm$core$Tuple$pair = F2(
+	function (a, b) {
+		return _Utils_Tuple2(a, b);
+	});
+var $elm$core$List$sortBy = _List_sortBy;
+var $author$project$Util$List$shuffle = function (items) {
+	return A2(
+		$elm$random$Random$map,
+		function (weights) {
+			return A2(
+				$elm$core$List$map,
+				$elm$core$Tuple$second,
+				A2(
+					$elm$core$List$sortBy,
+					$elm$core$Tuple$first,
+					A3($elm$core$List$map2, $elm$core$Tuple$pair, weights, items)));
+		},
+		A2(
+			$elm$random$Random$list,
+			$elm$core$List$length(items),
+			A2($elm$random$Random$float, 0, 1)));
+};
+var $author$project$Feature$Expression$shuffleTier = function (_v0) {
+	var preferred = _v0.a;
+	var rest = _v0.b;
+	return A3(
+		$elm$random$Random$map2,
+		$elm$core$Basics$append,
+		$author$project$Util$List$shuffle(preferred),
+		$author$project$Util$List$shuffle(rest));
+};
+var $elm$core$List$sort = function (xs) {
+	return A2($elm$core$List$sortBy, $elm$core$Basics$identity, xs);
+};
+var $elm$core$List$takeReverse = F3(
+	function (n, list, kept) {
+		takeReverse:
+		while (true) {
+			if (n <= 0) {
+				return kept;
+			} else {
+				if (!list.b) {
+					return kept;
+				} else {
+					var x = list.a;
+					var xs = list.b;
+					var $temp$n = n - 1,
+						$temp$list = xs,
+						$temp$kept = A2($elm$core$List$cons, x, kept);
+					n = $temp$n;
+					list = $temp$list;
+					kept = $temp$kept;
+					continue takeReverse;
+				}
+			}
+		}
+	});
+var $elm$core$List$takeTailRec = F2(
+	function (n, list) {
+		return $elm$core$List$reverse(
+			A3($elm$core$List$takeReverse, n, list, _List_Nil));
+	});
+var $elm$core$List$takeFast = F3(
+	function (ctr, n, list) {
+		if (n <= 0) {
+			return _List_Nil;
+		} else {
+			var _v0 = _Utils_Tuple2(n, list);
+			_v0$1:
+			while (true) {
+				_v0$5:
+				while (true) {
+					if (!_v0.b.b) {
+						return list;
+					} else {
+						if (_v0.b.b.b) {
+							switch (_v0.a) {
+								case 1:
+									break _v0$1;
+								case 2:
+									var _v2 = _v0.b;
+									var x = _v2.a;
+									var _v3 = _v2.b;
+									var y = _v3.a;
+									return _List_fromArray(
+										[x, y]);
+								case 3:
+									if (_v0.b.b.b.b) {
+										var _v4 = _v0.b;
+										var x = _v4.a;
+										var _v5 = _v4.b;
+										var y = _v5.a;
+										var _v6 = _v5.b;
+										var z = _v6.a;
+										return _List_fromArray(
+											[x, y, z]);
+									} else {
+										break _v0$5;
+									}
+								default:
+									if (_v0.b.b.b.b && _v0.b.b.b.b.b) {
+										var _v7 = _v0.b;
+										var x = _v7.a;
+										var _v8 = _v7.b;
+										var y = _v8.a;
+										var _v9 = _v8.b;
+										var z = _v9.a;
+										var _v10 = _v9.b;
+										var w = _v10.a;
+										var tl = _v10.b;
+										return (ctr > 1000) ? A2(
+											$elm$core$List$cons,
+											x,
+											A2(
+												$elm$core$List$cons,
+												y,
+												A2(
+													$elm$core$List$cons,
+													z,
+													A2(
+														$elm$core$List$cons,
+														w,
+														A2($elm$core$List$takeTailRec, n - 4, tl))))) : A2(
+											$elm$core$List$cons,
+											x,
+											A2(
+												$elm$core$List$cons,
+												y,
+												A2(
+													$elm$core$List$cons,
+													z,
+													A2(
+														$elm$core$List$cons,
+														w,
+														A3($elm$core$List$takeFast, ctr + 1, n - 4, tl)))));
+									} else {
+										break _v0$5;
+									}
+							}
+						} else {
+							if (_v0.a === 1) {
+								break _v0$1;
+							} else {
+								break _v0$5;
+							}
+						}
+					}
+				}
+				return list;
+			}
+			var _v1 = _v0.b;
+			var x = _v1.a;
+			return _List_fromArray(
+				[x]);
+		}
+	});
+var $elm$core$List$take = F2(
+	function (n, list) {
+		return A3($elm$core$List$takeFast, 0, n, list);
+	});
+var $elm$random$Random$addOne = function (value) {
+	return _Utils_Tuple2(1, value);
+};
+var $elm$random$Random$getByWeight = F3(
+	function (_v0, others, countdown) {
+		getByWeight:
+		while (true) {
+			var weight = _v0.a;
+			var value = _v0.b;
+			if (!others.b) {
+				return value;
+			} else {
+				var second = others.a;
+				var otherOthers = others.b;
+				if (_Utils_cmp(
+					countdown,
+					$elm$core$Basics$abs(weight)) < 1) {
+					return value;
+				} else {
+					var $temp$_v0 = second,
+						$temp$others = otherOthers,
+						$temp$countdown = countdown - $elm$core$Basics$abs(weight);
+					_v0 = $temp$_v0;
+					others = $temp$others;
+					countdown = $temp$countdown;
+					continue getByWeight;
+				}
+			}
+		}
+	});
+var $elm$core$List$sum = function (numbers) {
+	return A3($elm$core$List$foldl, $elm$core$Basics$add, 0, numbers);
+};
+var $elm$random$Random$weighted = F2(
+	function (first, others) {
+		var normalize = function (_v0) {
+			var weight = _v0.a;
+			return $elm$core$Basics$abs(weight);
+		};
+		var total = normalize(first) + $elm$core$List$sum(
+			A2($elm$core$List$map, normalize, others));
+		return A2(
+			$elm$random$Random$map,
+			A2($elm$random$Random$getByWeight, first, others),
+			A2($elm$random$Random$float, 0, total));
+	});
+var $elm$random$Random$uniform = F2(
+	function (value, valueList) {
+		return A2(
+			$elm$random$Random$weighted,
+			$elm$random$Random$addOne(value),
+			A2($elm$core$List$map, $elm$random$Random$addOne, valueList));
+	});
+var $elm$core$Set$Set_elm_builtin = $elm$core$Basics$identity;
+var $elm$core$Set$empty = $elm$core$Dict$empty;
+var $elm$core$Set$insert = F2(
+	function (key, _v0) {
+		var dict = _v0;
+		return A3($elm$core$Dict$insert, key, 0, dict);
+	});
+var $elm$core$Dict$member = F2(
+	function (key, dict) {
+		var _v0 = A2($elm$core$Dict$get, key, dict);
+		if (!_v0.$) {
+			return true;
+		} else {
+			return false;
+		}
+	});
+var $elm$core$Set$member = F2(
+	function (key, _v0) {
+		var dict = _v0;
+		return A2($elm$core$Dict$member, key, dict);
+	});
+var $author$project$Util$List$unique = function (list) {
+	return $elm$core$List$reverse(
+		A3(
+			$elm$core$List$foldl,
+			F2(
+				function (item, _v0) {
+					var seen = _v0.a;
+					var acc = _v0.b;
+					return A2($elm$core$Set$member, item, seen) ? _Utils_Tuple2(seen, acc) : _Utils_Tuple2(
+						A2($elm$core$Set$insert, item, seen),
+						A2($elm$core$List$cons, item, acc));
+				}),
+			_Utils_Tuple2($elm$core$Set$empty, _List_Nil),
+			list).b);
+};
+var $author$project$Feature$Expression$variantCount = 5;
+var $author$project$Feature$Expression$generateVariants = F2(
+	function (operation, _arguments) {
+		var answer = A2($author$project$Feature$Expression$result, operation, _arguments);
+		var pickVariants = function (mistakes) {
+			var below = A2(
+				$elm$core$List$filter,
+				$elm$core$Basics$gt(answer),
+				mistakes);
+			var above = A2(
+				$elm$core$List$filter,
+				$elm$core$Basics$lt(answer),
+				mistakes);
+			var toVariants = function (belowCount) {
+				return $elm$core$List$sort(
+					_Utils_ap(
+						A2($elm$core$List$take, belowCount, below),
+						A2(
+							$elm$core$List$cons,
+							answer,
+							A2($elm$core$List$take, ($author$project$Feature$Expression$variantCount - 1) - belowCount, above))));
+			};
+			var _v0 = A2(
+				$elm$core$List$filter,
+				function (n) {
+					return (_Utils_cmp(
+						n,
+						$elm$core$List$length(below)) < 1) && (_Utils_cmp(
+						($author$project$Feature$Expression$variantCount - 1) - n,
+						$elm$core$List$length(above)) < 1);
+				},
+				A2($elm$core$List$range, 0, $author$project$Feature$Expression$variantCount - 1));
+			if (_v0.b) {
+				var first = _v0.a;
+				var rest = _v0.b;
+				return A2(
+					$elm$random$Random$map,
+					toVariants,
+					A2($elm$random$Random$uniform, first, rest));
+			} else {
+				return $elm$random$Random$constant(
+					$elm$core$List$sort(
+						A2(
+							$elm$core$List$cons,
+							answer,
+							A2($elm$core$List$take, $author$project$Feature$Expression$variantCount - 1, mistakes))));
+			}
+		};
+		return A2(
+			$elm$random$Random$andThen,
+			pickVariants,
+			A2(
+				$elm$random$Random$map,
+				A2(
+					$elm$core$Basics$composeR,
+					$author$project$Util$List$unique,
+					$elm$core$List$filter(
+						function (x) {
+							return (x > 0) && (!_Utils_eq(x, answer));
+						})),
+				A3(
+					$elm$core$List$foldr,
+					$elm$random$Random$map2($elm$core$Basics$append),
+					$elm$random$Random$constant(_List_Nil),
+					A2(
+						$elm$core$List$map,
+						A2(
+							$elm$core$Basics$composeR,
+							A2($author$project$Feature$Expression$preferSameParity, operation, answer),
+							$author$project$Feature$Expression$shuffleTier),
+						A2($author$project$Feature$Expression$mistakeTiers, operation, _arguments)))));
+	});
 var $elm$random$Random$int = F2(
 	function (a, b) {
 		return function (seed0) {
@@ -6275,34 +6813,6 @@ var $elm$random$Random$int = F2(
 			}
 		};
 	});
-var $elm$random$Random$map = F2(
-	function (func, _v0) {
-		var genA = _v0;
-		return function (seed0) {
-			var _v1 = genA(seed0);
-			var a = _v1.a;
-			var seed1 = _v1.b;
-			return _Utils_Tuple2(
-				func(a),
-				seed1);
-		};
-	});
-var $elm$random$Random$map2 = F3(
-	function (func, _v0, _v1) {
-		var genA = _v0;
-		var genB = _v1;
-		return function (seed0) {
-			var _v2 = genA(seed0);
-			var a = _v2.a;
-			var seed1 = _v2.b;
-			var _v3 = genB(seed1);
-			var b = _v3.a;
-			var seed2 = _v3.b;
-			return _Utils_Tuple2(
-				A2(func, a, b),
-				seed2);
-		};
-	});
 var $elm$random$Random$pair = F2(
 	function (genA, genB) {
 		return A3(
@@ -6314,102 +6824,36 @@ var $elm$random$Random$pair = F2(
 			genA,
 			genB);
 	});
-var $elm$core$Tuple$second = function (_v0) {
-	var y = _v0.b;
-	return y;
-};
-var $author$project$Feature$Expression$result = F2(
-	function (operation, pair) {
-		switch (operation) {
-			case 0:
-				return pair.a + pair.b;
-			case 1:
-				return pair.a - pair.b;
-			case 2:
-				return pair.a * pair.b;
-			default:
-				return (pair.a / pair.b) | 0;
-		}
-	});
-var $elm$random$Random$maxInt = 2147483647;
-var $elm$core$List$sortBy = _List_sortBy;
-var $elm$random$Random$step = F2(
-	function (_v0, seed) {
-		var generator = _v0;
-		return generator(seed);
-	});
-var $author$project$Util$List$shacke = F2(
-	function (initialSeed, items) {
-		return A2(
-			$elm$core$List$map,
-			$elm$core$Tuple$first,
-			A2(
-				$elm$core$List$sortBy,
-				$elm$core$Tuple$second,
-				A3(
-					$elm$core$List$foldl,
-					F2(
-						function (item, _v0) {
-							var list = _v0.a;
-							var seed = _v0.b;
-							var _v1 = A2(
-								$elm$random$Random$step,
-								A2($elm$random$Random$int, 0, $elm$random$Random$maxInt),
-								seed);
-							var weight = _v1.a;
-							var nextSeed = _v1.b;
-							return _Utils_Tuple2(
-								A2(
-									$elm$core$List$cons,
-									_Utils_Tuple2(item, weight),
-									list),
-								nextSeed);
-						}),
-					_Utils_Tuple2(_List_Nil, initialSeed),
-					items).a));
-	});
-var $elm$core$Set$Set_elm_builtin = $elm$core$Basics$identity;
-var $elm$core$Set$empty = $elm$core$Dict$empty;
-var $elm$core$Set$insert = F2(
-	function (key, _v0) {
-		var dict = _v0;
-		return A3($elm$core$Dict$insert, key, 0, dict);
-	});
-var $elm$core$Set$fromList = function (list) {
-	return A3($elm$core$List$foldl, $elm$core$Set$insert, $elm$core$Set$empty, list);
-};
-var $author$project$Util$List$toUniqueItems = function (list) {
-	return $elm$core$Set$toList(
-		$elm$core$Set$fromList(list));
-};
-var $author$project$Feature$Expression$generate = F3(
-	function (seed, level, operation) {
-		var expResultOf = $author$project$Feature$Expression$result(operation);
-		var toExp = function (pair) {
-			var variants = A2(
-				$author$project$Util$List$shacke,
-				seed,
-				$author$project$Util$List$toUniqueItems(
-					A2(
-						$elm$core$List$filter,
-						$elm$core$Basics$lt(0),
-						A2(
-							$elm$core$List$cons,
-							expResultOf(pair),
-							A2(
-								$elm$core$List$range,
-								expResultOf(pair) - 2,
-								expResultOf(pair) + 2)))));
-			return A5($author$project$Feature$Expression$Expression, operation, pair, variants, $elm$core$Maybe$Nothing, 0);
-		};
+var $author$project$Feature$Expression$generate = F2(
+	function (level, operation) {
+		var toExp = F2(
+			function (_arguments, variants) {
+				return A5($author$project$Feature$Expression$Expression, operation, _arguments, variants, $elm$core$Maybe$Nothing, 0);
+			});
 		var _v0 = $author$project$Feature$ExpressionLevel$argumentRange(level);
 		var minArg = _v0.a;
 		var maxArg = _v0.b;
 		var intGen = A2($elm$random$Random$int, minArg, maxArg);
-		var pairGen = A2($elm$random$Random$pair, intGen, intGen);
-		return A2($elm$random$Random$map, toExp, pairGen);
+		return A2(
+			$elm$random$Random$andThen,
+			function (_arguments) {
+				return A2(
+					$elm$random$Random$map,
+					toExp(_arguments),
+					A2($author$project$Feature$Expression$generateVariants, operation, _arguments));
+			},
+			A2($elm$random$Random$pair, intGen, intGen));
 	});
 var $elm$random$Random$Generate = $elm$core$Basics$identity;
+var $elm$random$Random$initialSeed = function (x) {
+	var _v0 = $elm$random$Random$next(
+		A2($elm$random$Random$Seed, 0, 1013904223));
+	var state1 = _v0.a;
+	var incr = _v0.b;
+	var state2 = (state1 + x) >>> 0;
+	return $elm$random$Random$next(
+		A2($elm$random$Random$Seed, state2, incr));
+};
 var $elm$random$Random$init = A2(
 	$elm$core$Task$andThen,
 	function (time) {
@@ -6418,6 +6862,11 @@ var $elm$random$Random$init = A2(
 				$elm$time$Time$posixToMillis(time)));
 	},
 	$elm$time$Time$now);
+var $elm$random$Random$step = F2(
+	function (_v0, seed) {
+		var generator = _v0;
+		return generator(seed);
+	});
 var $elm$random$Random$onEffects = F3(
 	function (router, commands, seed) {
 		if (!commands.b) {
@@ -6452,35 +6901,6 @@ var $elm$random$Random$generate = F2(
 		return $elm$random$Random$command(
 			A2($elm$random$Random$map, tagger, generator));
 	});
-var $elm$random$Random$listHelp = F4(
-	function (revList, n, gen, seed) {
-		listHelp:
-		while (true) {
-			if (n < 1) {
-				return _Utils_Tuple2(revList, seed);
-			} else {
-				var _v0 = gen(seed);
-				var value = _v0.a;
-				var newSeed = _v0.b;
-				var $temp$revList = A2($elm$core$List$cons, value, revList),
-					$temp$n = n - 1,
-					$temp$gen = gen,
-					$temp$seed = newSeed;
-				revList = $temp$revList;
-				n = $temp$n;
-				gen = $temp$gen;
-				seed = $temp$seed;
-				continue listHelp;
-			}
-		}
-	});
-var $elm$random$Random$list = F2(
-	function (n, _v0) {
-		var gen = _v0;
-		return function (seed) {
-			return A4($elm$random$Random$listHelp, _List_Nil, n, gen, seed);
-		};
-	});
 var $elm$core$Dict$values = function (dict) {
 	return A3(
 		$elm$core$Dict$foldr,
@@ -6512,7 +6932,7 @@ var $author$project$Page$Root$generateExpressions = function (model) {
 			A2(
 				$elm$random$Random$list,
 				10,
-				A3($author$project$Feature$Expression$generate, model.ar, model.ba, model.bo))));
+				A2($author$project$Feature$Expression$generate, model.a9, model.bn))));
 };
 var $elm$core$List$head = function (list) {
 	if (list.b) {
@@ -6574,10 +6994,7 @@ var $author$project$Page$Root$update = F2(
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{
-							bP: time,
-							ar: $elm$random$Random$initialSeed(time)
-						}),
+						{bO: time}),
 					$elm$core$Platform$Cmd$none);
 			case 1:
 				var level = msg.a;
@@ -6585,7 +7002,7 @@ var $author$project$Page$Root$update = F2(
 					_Utils_update(
 						model,
 						{
-							ba: $author$project$Feature$ExpressionLevel$fromString(level)
+							a9: $author$project$Feature$ExpressionLevel$fromString(level)
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 2:
@@ -6594,7 +7011,7 @@ var $author$project$Page$Root$update = F2(
 					_Utils_update(
 						model,
 						{
-							bo: $author$project$Feature$ExpressionOperation$fromString(operation)
+							bn: $author$project$Feature$ExpressionOperation$fromString(operation)
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 3:
@@ -6609,7 +7026,7 @@ var $author$project$Page$Root$update = F2(
 						{
 							Z: false,
 							g: $elm$core$List$head(exps),
-							n: exps
+							s: exps
 						}),
 					$author$project$Page$Root$getTime);
 			case 5:
@@ -6633,20 +7050,20 @@ var $author$project$Page$Root$update = F2(
 							_Utils_update(
 								currExp,
 								{
-									aL: $elm$core$Maybe$Just(answer),
-									dy: time - model.bP
+									aK: $elm$core$Maybe$Just(answer),
+									dx: time - model.bO
 								}));
 					} else {
 						return model.g;
 					}
 				}();
-				var _v1 = A3($author$project$Page$Root$updateCurrExp, model.g, newCurrExp, model.n);
+				var _v1 = A3($author$project$Page$Root$updateCurrExp, model.g, newCurrExp, model.s);
 				var currExpression = _v1.a;
 				var expressions = _v1.b;
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{_: true, g: currExpression, n: expressions}),
+						{_: true, g: currExpression, s: expressions}),
 					A2(
 						$elm$core$Task$perform,
 						$elm$core$Basics$identity,
@@ -6656,34 +7073,15 @@ var $author$project$Page$Root$update = F2(
 								$elm$core$Task$succeed($author$project$Page$Root$NextExpression)),
 							$elm$core$Process$sleep(1000))));
 			default:
-				var mbCurrExp = A2($author$project$Page$Root$nextExpression, model.g, model.n);
-				var mbNewCurrExp = function () {
-					if (!mbCurrExp.$) {
-						var currExp = mbCurrExp.a;
-						return $elm$core$Maybe$Just(
-							_Utils_update(
-								currExp,
-								{
-									dE: A2($author$project$Util$List$shacke, model.ar, currExp.dE)
-								}));
-					} else {
-						return mbCurrExp;
-					}
-				}();
-				var answered = function () {
-					if (mbNewCurrExp.$ === 1) {
-						return true;
-					} else {
-						return false;
-					}
-				}();
-				var _v3 = A3($author$project$Page$Root$updateCurrExp, mbCurrExp, mbNewCurrExp, model.n);
-				var currExpression = _v3.a;
-				var expressions = _v3.b;
+				var mbNextExp = A2($author$project$Page$Root$nextExpression, model.g, model.s);
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{Z: answered, _: false, g: currExpression, n: expressions}),
+						{
+							Z: _Utils_eq(mbNextExp, $elm$core$Maybe$Nothing),
+							_: false,
+							g: mbNextExp
+						}),
 					$author$project$Page$Root$getTime);
 		}
 	});
@@ -6701,7 +7099,7 @@ var $author$project$Main$update = F2(
 					var routeModel = $author$project$Main$toRouteModel(model);
 					return _Utils_Tuple2(
 						model,
-						A2($elm$browser$Browser$Navigation$pushUrl, routeModel.cM, urlStr));
+						A2($elm$browser$Browser$Navigation$pushUrl, routeModel.cL, urlStr));
 				} else {
 					var href = urlRequest.a;
 					return _Utils_Tuple2(
@@ -6891,7 +7289,7 @@ var $rundis$elm_bootstrap$Bootstrap$Internal$Button$applyModifier = F2(
 				return _Utils_update(
 					options,
 					{
-						bM: $elm$core$Maybe$Just(size)
+						bL: $elm$core$Maybe$Just(size)
 					});
 			case 1:
 				var coloring = modifier.a;
@@ -6903,18 +7301,18 @@ var $rundis$elm_bootstrap$Bootstrap$Internal$Button$applyModifier = F2(
 			case 2:
 				return _Utils_update(
 					options,
-					{aQ: true});
+					{aP: true});
 			case 3:
 				var val = modifier.a;
 				return _Utils_update(
 					options,
-					{a_: val});
+					{aZ: val});
 			default:
 				var attrs = modifier.a;
 				return _Utils_update(
 					options,
 					{
-						aN: _Utils_ap(options.aN, attrs)
+						aM: _Utils_ap(options.aM, attrs)
 					});
 		}
 	});
@@ -6928,7 +7326,7 @@ var $elm$html$Html$Attributes$classList = function (classes) {
 				$elm$core$Tuple$first,
 				A2($elm$core$List$filter, $elm$core$Tuple$second, classes))));
 };
-var $rundis$elm_bootstrap$Bootstrap$Internal$Button$defaultOptions = {aN: _List_Nil, aQ: false, x: $elm$core$Maybe$Nothing, a_: false, bM: $elm$core$Maybe$Nothing};
+var $rundis$elm_bootstrap$Bootstrap$Internal$Button$defaultOptions = {aM: _List_Nil, aP: false, x: $elm$core$Maybe$Nothing, aZ: false, bL: $elm$core$Maybe$Nothing};
 var $elm$json$Json$Encode$bool = _Json_wrap;
 var $elm$html$Html$Attributes$boolProperty = F2(
 	function (key, bool) {
@@ -6983,14 +7381,14 @@ var $rundis$elm_bootstrap$Bootstrap$Internal$Button$buttonAttributes = function 
 				_List_fromArray(
 					[
 						_Utils_Tuple2('btn', true),
-						_Utils_Tuple2('btn-block', options.aQ),
-						_Utils_Tuple2('disabled', options.a_)
+						_Utils_Tuple2('btn-block', options.aP),
+						_Utils_Tuple2('disabled', options.aZ)
 					])),
-				$elm$html$Html$Attributes$disabled(options.a_)
+				$elm$html$Html$Attributes$disabled(options.aZ)
 			]),
 		_Utils_ap(
 			function () {
-				var _v0 = A2($elm$core$Maybe$andThen, $rundis$elm_bootstrap$Bootstrap$General$Internal$screenSizeOption, options.bM);
+				var _v0 = A2($elm$core$Maybe$andThen, $rundis$elm_bootstrap$Bootstrap$General$Internal$screenSizeOption, options.bL);
 				if (!_v0.$) {
 					var s = _v0.a;
 					return _List_fromArray(
@@ -7024,7 +7422,7 @@ var $rundis$elm_bootstrap$Bootstrap$Internal$Button$buttonAttributes = function 
 						return _List_Nil;
 					}
 				}(),
-				options.aN)));
+				options.aM)));
 };
 var $rundis$elm_bootstrap$Bootstrap$Button$button = F2(
 	function (options, children) {
@@ -7037,7 +7435,7 @@ var $rundis$elm_bootstrap$Bootstrap$General$Internal$Center = 1;
 var $rundis$elm_bootstrap$Bootstrap$General$Internal$XS = 0;
 var $rundis$elm_bootstrap$Bootstrap$General$Internal$HAlign = F2(
 	function (screenSize, align) {
-		return {cp: align, c0: screenSize};
+		return {co: align, c$: screenSize};
 	});
 var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$RowHAlign = function (a) {
 	return {$: 1, a: a};
@@ -7051,7 +7449,7 @@ var $rundis$elm_bootstrap$Bootstrap$Grid$Row$centerXs = A2($rundis$elm_bootstrap
 var $rundis$elm_bootstrap$Bootstrap$Form$Col = $elm$core$Basics$identity;
 var $rundis$elm_bootstrap$Bootstrap$Form$col = F2(
 	function (options, children) {
-		return {ct: children, cx: $elm$html$Html$div, dv: options};
+		return {cs: children, cw: $elm$html$Html$div, du: options};
 	});
 var $rundis$elm_bootstrap$Bootstrap$Grid$container = F2(
 	function (attributes, children) {
@@ -7073,11 +7471,11 @@ var $author$project$Feature$Expression$answeredAndCorrectly = function (mbExp) {
 		return false;
 	} else {
 		var exp = mbExp.a;
-		var _v1 = _Utils_Tuple2(exp.bo, exp.aL);
+		var _v1 = _Utils_Tuple2(exp.bn, exp.aK);
 		if (!_v1.b.$) {
 			var answer = _v1.b.a;
 			return _Utils_eq(
-				A2($author$project$Feature$Expression$result, exp.bo, exp.aa),
+				A2($author$project$Feature$Expression$result, exp.bn, exp.aa),
 				answer);
 		} else {
 			return false;
@@ -7095,7 +7493,7 @@ var $author$project$Feature$Expression$answered = function (mbExp) {
 		return false;
 	} else {
 		var exp = mbExp.a;
-		var _v1 = exp.aL;
+		var _v1 = exp.aK;
 		if (_v1.$ === 1) {
 			return false;
 		} else {
@@ -7122,7 +7520,7 @@ var $author$project$Feature$Expression$displayValue = function (mbExp) {
 	if (!mbExp.$) {
 		var exp = mbExp.a;
 		var answerStr = function () {
-			var _v1 = exp.aL;
+			var _v1 = exp.aK;
 			if (!_v1.$) {
 				var answer = _v1.a;
 				return $elm$core$String$fromInt(answer);
@@ -7133,7 +7531,7 @@ var $author$project$Feature$Expression$displayValue = function (mbExp) {
 		return _Utils_ap(
 			$elm$core$String$fromInt(exp.aa.a),
 			_Utils_ap(
-				$author$project$Feature$ExpressionOperation$toString(exp.bo),
+				$author$project$Feature$ExpressionOperation$toString(exp.bn),
 				_Utils_ap(
 					$elm$core$String$fromInt(exp.aa.b),
 					_Utils_ap(
@@ -7168,7 +7566,7 @@ var $rundis$elm_bootstrap$Bootstrap$Form$Input$Type = function (a) {
 var $rundis$elm_bootstrap$Bootstrap$Form$Input$create = F2(
 	function (tipe, options) {
 		return {
-			dv: A2(
+			du: A2(
 				$elm$core$List$cons,
 				$rundis$elm_bootstrap$Bootstrap$Form$Input$Type(tipe),
 				options)
@@ -7183,7 +7581,7 @@ var $rundis$elm_bootstrap$Bootstrap$Form$Input$applyModifier = F2(
 				return _Utils_update(
 					options,
 					{
-						bM: $elm$core$Maybe$Just(size_)
+						bL: $elm$core$Maybe$Just(size_)
 					});
 			case 1:
 				var id_ = modifier.a;
@@ -7196,12 +7594,12 @@ var $rundis$elm_bootstrap$Bootstrap$Form$Input$applyModifier = F2(
 				var tipe = modifier.a;
 				return _Utils_update(
 					options,
-					{as: tipe});
+					{ar: tipe});
 			case 3:
 				var val = modifier.a;
 				return _Utils_update(
 					options,
-					{a_: val});
+					{aZ: val});
 			case 4:
 				var value_ = modifier.a;
 				return _Utils_update(
@@ -7214,27 +7612,27 @@ var $rundis$elm_bootstrap$Bootstrap$Form$Input$applyModifier = F2(
 				return _Utils_update(
 					options,
 					{
-						bv: $elm$core$Maybe$Just(value_)
+						bu: $elm$core$Maybe$Just(value_)
 					});
 			case 5:
 				var onInput_ = modifier.a;
 				return _Utils_update(
 					options,
 					{
-						bn: $elm$core$Maybe$Just(onInput_)
+						bm: $elm$core$Maybe$Just(onInput_)
 					});
 			case 6:
 				var validation_ = modifier.a;
 				return _Utils_update(
 					options,
 					{
-						bY: $elm$core$Maybe$Just(validation_)
+						bX: $elm$core$Maybe$Just(validation_)
 					});
 			case 8:
 				var val = modifier.a;
 				return _Utils_update(
 					options,
-					{bG: val});
+					{bF: val});
 			case 9:
 				var val = modifier.a;
 				return _Utils_update(
@@ -7245,11 +7643,11 @@ var $rundis$elm_bootstrap$Bootstrap$Form$Input$applyModifier = F2(
 				return _Utils_update(
 					options,
 					{
-						aN: _Utils_ap(options.aN, attrs_)
+						aM: _Utils_ap(options.aM, attrs_)
 					});
 		}
 	});
-var $rundis$elm_bootstrap$Bootstrap$Form$Input$defaultOptions = {aN: _List_Nil, a_: false, ag: $elm$core$Maybe$Nothing, bn: $elm$core$Maybe$Nothing, bv: $elm$core$Maybe$Nothing, ap: false, bG: false, bM: $elm$core$Maybe$Nothing, as: 0, bY: $elm$core$Maybe$Nothing, u: $elm$core$Maybe$Nothing};
+var $rundis$elm_bootstrap$Bootstrap$Form$Input$defaultOptions = {aM: _List_Nil, aZ: false, ag: $elm$core$Maybe$Nothing, bm: $elm$core$Maybe$Nothing, bu: $elm$core$Maybe$Nothing, ap: false, bF: false, bL: $elm$core$Maybe$Nothing, ar: 0, bX: $elm$core$Maybe$Nothing, u: $elm$core$Maybe$Nothing};
 var $elm$core$List$maybeCons = F3(
 	function (f, mx, xs) {
 		var _v0 = f(mx);
@@ -7269,16 +7667,6 @@ var $elm$core$List$filterMap = F2(
 			xs);
 	});
 var $elm$html$Html$Attributes$id = $elm$html$Html$Attributes$stringProperty('id');
-var $elm$core$Maybe$map = F2(
-	function (f, maybe) {
-		if (!maybe.$) {
-			var value = maybe.a;
-			return $elm$core$Maybe$Just(
-				f(value));
-		} else {
-			return $elm$core$Maybe$Nothing;
-		}
-	});
 var $elm$html$Html$Events$alwaysStop = function (x) {
 	return _Utils_Tuple2(x, true);
 };
@@ -7376,9 +7764,9 @@ var $rundis$elm_bootstrap$Bootstrap$Form$Input$toAttributes = function (modifier
 			[
 				$elm$html$Html$Attributes$class(
 				options.ap ? 'form-control-plaintext' : 'form-control'),
-				$elm$html$Html$Attributes$disabled(options.a_),
-				$elm$html$Html$Attributes$readonly(options.bG || options.ap),
-				$rundis$elm_bootstrap$Bootstrap$Form$Input$typeAttribute(options.as)
+				$elm$html$Html$Attributes$disabled(options.aZ),
+				$elm$html$Html$Attributes$readonly(options.bF || options.ap),
+				$rundis$elm_bootstrap$Bootstrap$Form$Input$typeAttribute(options.ar)
 			]),
 		_Utils_ap(
 			A2(
@@ -7387,16 +7775,16 @@ var $rundis$elm_bootstrap$Bootstrap$Form$Input$toAttributes = function (modifier
 				_List_fromArray(
 					[
 						A2($elm$core$Maybe$map, $elm$html$Html$Attributes$id, options.ag),
-						A2($elm$core$Maybe$andThen, $rundis$elm_bootstrap$Bootstrap$Form$Input$sizeAttribute, options.bM),
+						A2($elm$core$Maybe$andThen, $rundis$elm_bootstrap$Bootstrap$Form$Input$sizeAttribute, options.bL),
 						A2($elm$core$Maybe$map, $elm$html$Html$Attributes$value, options.u),
-						A2($elm$core$Maybe$map, $elm$html$Html$Attributes$placeholder, options.bv),
-						A2($elm$core$Maybe$map, $elm$html$Html$Events$onInput, options.bn),
-						A2($elm$core$Maybe$map, $rundis$elm_bootstrap$Bootstrap$Form$Input$validationAttribute, options.bY)
+						A2($elm$core$Maybe$map, $elm$html$Html$Attributes$placeholder, options.bu),
+						A2($elm$core$Maybe$map, $elm$html$Html$Events$onInput, options.bm),
+						A2($elm$core$Maybe$map, $rundis$elm_bootstrap$Bootstrap$Form$Input$validationAttribute, options.bX)
 					])),
-			options.aN));
+			options.aM));
 };
 var $rundis$elm_bootstrap$Bootstrap$Form$Input$view = function (_v0) {
-	var options = _v0.dv;
+	var options = _v0.du;
 	return A2(
 		$elm$html$Html$input,
 		$rundis$elm_bootstrap$Bootstrap$Form$Input$toAttributes(options),
@@ -7515,7 +7903,6 @@ var $author$project$Feature$Expression$correctPercents = function (exps) {
 		exps);
 	return $elm$core$Basics$round((correctCount / totalCount) * 100);
 };
-var $elm$core$String$fromFloat = _String_fromNumber;
 var $elm$html$Html$h2 = _VirtualDom_node('h2');
 var $rundis$elm_bootstrap$Bootstrap$Internal$Role$Info = 3;
 var $rundis$elm_bootstrap$Bootstrap$Table$Roled = function (a) {
@@ -7526,8 +7913,10 @@ var $rundis$elm_bootstrap$Bootstrap$Table$RoledRow = function (a) {
 };
 var $rundis$elm_bootstrap$Bootstrap$Table$rowInfo = $rundis$elm_bootstrap$Bootstrap$Table$RoledRow(
 	$rundis$elm_bootstrap$Bootstrap$Table$Roled(3));
-var $elm$core$List$sum = function (numbers) {
-	return A3($elm$core$List$foldl, $elm$core$Basics$add, 0, numbers);
+var $author$project$Page$Root$secondsToTenths = function (ms) {
+	var tenths = $elm$core$Basics$round(ms / 100);
+	return $elm$core$String$fromInt((tenths / 10) | 0) + ('.' + $elm$core$String$fromInt(
+		A2($elm$core$Basics$modBy, 10, tenths)));
 };
 var $rundis$elm_bootstrap$Bootstrap$Table$Inversed = {$: 0};
 var $elm$core$List$any = F2(
@@ -7602,7 +7991,7 @@ var $rundis$elm_bootstrap$Bootstrap$Table$mapInversedCell = function (cell) {
 			_Utils_update(
 				cellCfg,
 				{
-					dv: inverseOptions(cellCfg.dv)
+					du: inverseOptions(cellCfg.du)
 				}));
 	} else {
 		var cellCfg = cell.a;
@@ -7610,7 +7999,7 @@ var $rundis$elm_bootstrap$Bootstrap$Table$mapInversedCell = function (cell) {
 			_Utils_update(
 				cellCfg,
 				{
-					dv: inverseOptions(cellCfg.dv)
+					du: inverseOptions(cellCfg.du)
 				}));
 	}
 };
@@ -7630,15 +8019,15 @@ var $rundis$elm_bootstrap$Bootstrap$Table$mapInversedRow = function (row) {
 	};
 	if (!row.$) {
 		var cells = row.a.h;
-		var options = row.a.dv;
+		var options = row.a.du;
 		return $rundis$elm_bootstrap$Bootstrap$Table$Row(
 			{
 				h: A2($elm$core$List$map, $rundis$elm_bootstrap$Bootstrap$Table$mapInversedCell, cells),
-				dv: inversedOptions(options)
+				du: inversedOptions(options)
 			});
 	} else {
 		var cells = row.a.h;
-		var options = row.a.dv;
+		var options = row.a.du;
 		return $rundis$elm_bootstrap$Bootstrap$Table$KeyedRow(
 			{
 				h: A2(
@@ -7651,7 +8040,7 @@ var $rundis$elm_bootstrap$Bootstrap$Table$mapInversedRow = function (row) {
 							$rundis$elm_bootstrap$Bootstrap$Table$mapInversedCell(cell));
 					},
 					cells),
-				dv: inversedOptions(options)
+				du: inversedOptions(options)
 			});
 	}
 };
@@ -7667,7 +8056,7 @@ var $rundis$elm_bootstrap$Bootstrap$Table$maybeMapInversedTBody = F2(
 					_Utils_update(
 						body,
 						{
-							bI: A2($elm$core$List$map, $rundis$elm_bootstrap$Bootstrap$Table$mapInversedRow, body.bI)
+							bH: A2($elm$core$List$map, $rundis$elm_bootstrap$Bootstrap$Table$mapInversedRow, body.bH)
 						}));
 			} else {
 				var keyedBody = _v0.b.a;
@@ -7675,7 +8064,7 @@ var $rundis$elm_bootstrap$Bootstrap$Table$maybeMapInversedTBody = F2(
 					_Utils_update(
 						keyedBody,
 						{
-							bI: A2(
+							bH: A2(
 								$elm$core$List$map,
 								function (_v1) {
 									var key = _v1.a;
@@ -7684,7 +8073,7 @@ var $rundis$elm_bootstrap$Bootstrap$Table$maybeMapInversedTBody = F2(
 										key,
 										$rundis$elm_bootstrap$Bootstrap$Table$mapInversedRow(row));
 								},
-								keyedBody.bI)
+								keyedBody.bH)
 						}));
 			}
 		}
@@ -7699,21 +8088,12 @@ var $rundis$elm_bootstrap$Bootstrap$Table$maybeMapInversedTHead = F2(
 			function (opt) {
 				return _Utils_eq(opt, $rundis$elm_bootstrap$Bootstrap$Table$InversedHead);
 			},
-			thead_.dv);
+			thead_.du);
 		return (isTableInversed || isHeadInversed) ? _Utils_update(
 			thead_,
 			{
-				bI: A2($elm$core$List$map, $rundis$elm_bootstrap$Bootstrap$Table$mapInversedRow, thead_.bI)
+				bH: A2($elm$core$List$map, $rundis$elm_bootstrap$Bootstrap$Table$mapInversedRow, thead_.bH)
 			}) : thead_;
-	});
-var $elm$core$Maybe$withDefault = F2(
-	function (_default, maybe) {
-		if (!maybe.$) {
-			var value = maybe.a;
-			return value;
-		} else {
-			return _default;
-		}
 	});
 var $rundis$elm_bootstrap$Bootstrap$Table$maybeWrapResponsive = F2(
 	function (options, table_) {
@@ -7763,11 +8143,11 @@ var $rundis$elm_bootstrap$Bootstrap$Table$addScopeIfTh = function (cell) {
 			_Utils_update(
 				cellConfig,
 				{
-					dv: A2(
+					du: A2(
 						$elm$core$List$cons,
 						$rundis$elm_bootstrap$Bootstrap$Table$cellAttr(
 							$elm$html$Html$Attributes$scope('row')),
-						cellConfig.dv)
+						cellConfig.du)
 				}));
 	} else {
 		return cell;
@@ -7776,7 +8156,7 @@ var $rundis$elm_bootstrap$Bootstrap$Table$addScopeIfTh = function (cell) {
 var $rundis$elm_bootstrap$Bootstrap$Table$maybeAddScopeToFirstCell = function (row) {
 	if (!row.$) {
 		var cells = row.a.h;
-		var options = row.a.dv;
+		var options = row.a.du;
 		if (!cells.b) {
 			return row;
 		} else {
@@ -7788,12 +8168,12 @@ var $rundis$elm_bootstrap$Bootstrap$Table$maybeAddScopeToFirstCell = function (r
 						$elm$core$List$cons,
 						$rundis$elm_bootstrap$Bootstrap$Table$addScopeIfTh(first),
 						rest),
-					dv: options
+					du: options
 				});
 		}
 	} else {
 		var cells = row.a.h;
-		var options = row.a.dv;
+		var options = row.a.du;
 		if (!cells.b) {
 			return row;
 		} else {
@@ -7809,7 +8189,7 @@ var $rundis$elm_bootstrap$Bootstrap$Table$maybeAddScopeToFirstCell = function (r
 							firstKey,
 							$rundis$elm_bootstrap$Bootstrap$Table$addScopeIfTh(first)),
 						rest),
-					dv: options
+					du: options
 				});
 		}
 	}
@@ -7873,15 +8253,15 @@ var $elm$html$Html$td = _VirtualDom_node('td');
 var $elm$html$Html$th = _VirtualDom_node('th');
 var $rundis$elm_bootstrap$Bootstrap$Table$renderCell = function (cell) {
 	if (!cell.$) {
-		var children = cell.a.ct;
-		var options = cell.a.dv;
+		var children = cell.a.cs;
+		var options = cell.a.du;
 		return A2(
 			$elm$html$Html$td,
 			$rundis$elm_bootstrap$Bootstrap$Table$cellAttributes(options),
 			children);
 	} else {
-		var children = cell.a.ct;
-		var options = cell.a.dv;
+		var children = cell.a.cs;
+		var options = cell.a.du;
 		return A2(
 			$elm$html$Html$th,
 			$rundis$elm_bootstrap$Bootstrap$Table$cellAttributes(options),
@@ -7918,14 +8298,14 @@ var $elm$html$Html$tr = _VirtualDom_node('tr');
 var $rundis$elm_bootstrap$Bootstrap$Table$renderRow = function (row) {
 	if (!row.$) {
 		var cells = row.a.h;
-		var options = row.a.dv;
+		var options = row.a.du;
 		return A2(
 			$elm$html$Html$tr,
 			$rundis$elm_bootstrap$Bootstrap$Table$rowAttributes(options),
 			A2($elm$core$List$map, $rundis$elm_bootstrap$Bootstrap$Table$renderCell, cells));
 	} else {
 		var cells = row.a.h;
-		var options = row.a.dv;
+		var options = row.a.du;
 		return A3(
 			$elm$html$Html$Keyed$node,
 			'tr',
@@ -7945,8 +8325,8 @@ var $rundis$elm_bootstrap$Bootstrap$Table$renderRow = function (row) {
 var $elm$html$Html$tbody = _VirtualDom_node('tbody');
 var $rundis$elm_bootstrap$Bootstrap$Table$renderTBody = function (body) {
 	if (!body.$) {
-		var rows = body.a.bI;
-		var attributes = body.a.aN;
+		var rows = body.a.bH;
+		var attributes = body.a.aM;
 		return A2(
 			$elm$html$Html$tbody,
 			attributes,
@@ -7958,8 +8338,8 @@ var $rundis$elm_bootstrap$Bootstrap$Table$renderTBody = function (body) {
 				},
 				rows));
 	} else {
-		var rows = body.a.bI;
-		var attributes = body.a.aN;
+		var rows = body.a.bH;
+		var attributes = body.a.aM;
 		return A3(
 			$elm$html$Html$Keyed$node,
 			'tbody',
@@ -7993,8 +8373,8 @@ var $rundis$elm_bootstrap$Bootstrap$Table$theadAttributes = function (options) {
 	return A2($elm$core$List$map, $rundis$elm_bootstrap$Bootstrap$Table$theadAttribute, options);
 };
 var $rundis$elm_bootstrap$Bootstrap$Table$renderTHead = function (_v0) {
-	var rows = _v0.bI;
-	var options = _v0.dv;
+	var rows = _v0.bH;
+	var options = _v0.du;
 	return A2(
 		$elm$html$Html$thead,
 		$rundis$elm_bootstrap$Bootstrap$Table$theadAttributes(options),
@@ -8043,50 +8423,50 @@ var $rundis$elm_bootstrap$Bootstrap$Table$table = function (rec) {
 		function (opt) {
 			return _Utils_eq(opt, $rundis$elm_bootstrap$Bootstrap$Table$Inversed);
 		},
-		rec.dv);
+		rec.du);
 	var classOptions = A2(
 		$elm$core$List$filter,
 		function (opt) {
 			return !$rundis$elm_bootstrap$Bootstrap$Table$isResponsive(opt);
 		},
-		rec.dv);
+		rec.du);
 	return A2(
 		$rundis$elm_bootstrap$Bootstrap$Table$maybeWrapResponsive,
-		rec.dv,
+		rec.du,
 		A2(
 			$elm$html$Html$table,
 			$rundis$elm_bootstrap$Bootstrap$Table$tableAttributes(classOptions),
 			_List_fromArray(
 				[
 					$rundis$elm_bootstrap$Bootstrap$Table$renderTHead(
-					A2($rundis$elm_bootstrap$Bootstrap$Table$maybeMapInversedTHead, isInversed, rec.dC)),
+					A2($rundis$elm_bootstrap$Bootstrap$Table$maybeMapInversedTHead, isInversed, rec.dB)),
 					$rundis$elm_bootstrap$Bootstrap$Table$renderTBody(
-					A2($rundis$elm_bootstrap$Bootstrap$Table$maybeMapInversedTBody, isInversed, rec.dB))
+					A2($rundis$elm_bootstrap$Bootstrap$Table$maybeMapInversedTBody, isInversed, rec.dA))
 				])));
 };
 var $rundis$elm_bootstrap$Bootstrap$Table$tbody = F2(
 	function (attributes, rows) {
 		return $rundis$elm_bootstrap$Bootstrap$Table$TBody(
-			{aN: attributes, bI: rows});
+			{aM: attributes, bH: rows});
 	});
 var $rundis$elm_bootstrap$Bootstrap$Table$td = F2(
 	function (options, children) {
 		return $rundis$elm_bootstrap$Bootstrap$Table$Td(
-			{ct: children, dv: options});
+			{cs: children, du: options});
 	});
 var $rundis$elm_bootstrap$Bootstrap$Table$th = F2(
 	function (options, children) {
 		return $rundis$elm_bootstrap$Bootstrap$Table$Th(
-			{ct: children, dv: options});
+			{cs: children, du: options});
 	});
 var $rundis$elm_bootstrap$Bootstrap$Table$thead = F2(
 	function (options, rows) {
-		return {dv: options, bI: rows};
+		return {du: options, bH: rows};
 	});
 var $rundis$elm_bootstrap$Bootstrap$Table$tr = F2(
 	function (options, cells) {
 		return $rundis$elm_bootstrap$Bootstrap$Table$Row(
-			{h: cells, dv: options});
+			{h: cells, du: options});
 	});
 var $rundis$elm_bootstrap$Bootstrap$Internal$Role$Success = 2;
 var $rundis$elm_bootstrap$Bootstrap$Table$rowSuccess = $rundis$elm_bootstrap$Bootstrap$Table$RoledRow(
@@ -8167,12 +8547,12 @@ var $author$project$Page$Root$resultTable = function (model) {
 							_List_fromArray(
 								[
 									$elm$html$Html$text(
-									$elm$core$String$fromFloat(exp.dy / 1000))
+									$author$project$Page$Root$secondsToTenths(exp.dx))
 								]))
 						]),
 					$rundis$elm_bootstrap$Bootstrap$Table$tr);
 			}),
-		model.n);
+		model.s);
 	var tbody = A2(
 		$rundis$elm_bootstrap$Bootstrap$Table$tbody,
 		_List_Nil,
@@ -8200,7 +8580,7 @@ var $author$project$Page$Root$resultTable = function (model) {
 								[
 									$elm$html$Html$text(
 									$elm$core$String$fromInt(
-										$author$project$Feature$Expression$correctPercents(model.n))),
+										$author$project$Feature$Expression$correctPercents(model.s))),
 									$elm$html$Html$text('% of correct answers')
 								])),
 							A2(
@@ -8209,14 +8589,14 @@ var $author$project$Page$Root$resultTable = function (model) {
 							_List_fromArray(
 								[
 									$elm$html$Html$text(
-									$elm$core$String$fromFloat(
-										0.001 * $elm$core$List$sum(
+									$author$project$Page$Root$secondsToTenths(
+										$elm$core$List$sum(
 											A2(
 												$elm$core$List$map,
 												function (exp) {
-													return exp.dy;
+													return exp.dx;
 												},
-												model.n))))
+												model.s))))
 								]))
 						]))
 				])));
@@ -8233,227 +8613,227 @@ var $author$project$Page$Root$resultTable = function (model) {
 						$elm$html$Html$text('Result')
 					])),
 				$rundis$elm_bootstrap$Bootstrap$Table$table(
-				{dv: options, dB: tbody, dC: thead})
+				{du: options, dA: tbody, dB: thead})
 			])) : $elm$html$Html$text('');
 };
 var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$Col = 0;
 var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$Width = F2(
 	function (screenSize, columnCount) {
-		return {cu: columnCount, c0: screenSize};
+		return {ct: columnCount, c$: screenSize};
 	});
 var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$applyColAlign = F2(
 	function (align_, options) {
-		var _v0 = align_.c0;
+		var _v0 = align_.c$;
 		switch (_v0) {
 			case 0:
-				return _Utils_update(
-					options,
-					{
-						aJ: $elm$core$Maybe$Just(align_)
-					});
-			case 1:
-				return _Utils_update(
-					options,
-					{
-						aH: $elm$core$Maybe$Just(align_)
-					});
-			case 2:
-				return _Utils_update(
-					options,
-					{
-						aG: $elm$core$Maybe$Just(align_)
-					});
-			case 3:
-				return _Utils_update(
-					options,
-					{
-						aF: $elm$core$Maybe$Just(align_)
-					});
-			default:
 				return _Utils_update(
 					options,
 					{
 						aI: $elm$core$Maybe$Just(align_)
 					});
-		}
-	});
-var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$applyColOffset = F2(
-	function (offset_, options) {
-		var _v0 = offset_.c0;
-		switch (_v0) {
-			case 0:
-				return _Utils_update(
-					options,
-					{
-						bj: $elm$core$Maybe$Just(offset_)
-					});
 			case 1:
 				return _Utils_update(
 					options,
 					{
-						bg: $elm$core$Maybe$Just(offset_)
+						aG: $elm$core$Maybe$Just(align_)
 					});
 			case 2:
 				return _Utils_update(
 					options,
 					{
-						bf: $elm$core$Maybe$Just(offset_)
+						aF: $elm$core$Maybe$Just(align_)
 					});
 			case 3:
 				return _Utils_update(
 					options,
 					{
-						be: $elm$core$Maybe$Just(offset_)
+						aE: $elm$core$Maybe$Just(align_)
 					});
 			default:
+				return _Utils_update(
+					options,
+					{
+						aH: $elm$core$Maybe$Just(align_)
+					});
+		}
+	});
+var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$applyColOffset = F2(
+	function (offset_, options) {
+		var _v0 = offset_.c$;
+		switch (_v0) {
+			case 0:
 				return _Utils_update(
 					options,
 					{
 						bi: $elm$core$Maybe$Just(offset_)
 					});
-		}
-	});
-var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$applyColOrder = F2(
-	function (order_, options) {
-		var _v0 = order_.c0;
-		switch (_v0) {
-			case 0:
-				return _Utils_update(
-					options,
-					{
-						bu: $elm$core$Maybe$Just(order_)
-					});
 			case 1:
 				return _Utils_update(
 					options,
 					{
-						bs: $elm$core$Maybe$Just(order_)
+						bf: $elm$core$Maybe$Just(offset_)
 					});
 			case 2:
 				return _Utils_update(
 					options,
 					{
-						br: $elm$core$Maybe$Just(order_)
+						be: $elm$core$Maybe$Just(offset_)
 					});
 			case 3:
 				return _Utils_update(
 					options,
 					{
-						bq: $elm$core$Maybe$Just(order_)
+						bd: $elm$core$Maybe$Just(offset_)
 					});
 			default:
+				return _Utils_update(
+					options,
+					{
+						bh: $elm$core$Maybe$Just(offset_)
+					});
+		}
+	});
+var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$applyColOrder = F2(
+	function (order_, options) {
+		var _v0 = order_.c$;
+		switch (_v0) {
+			case 0:
 				return _Utils_update(
 					options,
 					{
 						bt: $elm$core$Maybe$Just(order_)
 					});
-		}
-	});
-var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$applyColPull = F2(
-	function (pull_, options) {
-		var _v0 = pull_.c0;
-		switch (_v0) {
-			case 0:
-				return _Utils_update(
-					options,
-					{
-						bA: $elm$core$Maybe$Just(pull_)
-					});
 			case 1:
 				return _Utils_update(
 					options,
 					{
-						by: $elm$core$Maybe$Just(pull_)
+						br: $elm$core$Maybe$Just(order_)
 					});
 			case 2:
 				return _Utils_update(
 					options,
 					{
-						bx: $elm$core$Maybe$Just(pull_)
+						bq: $elm$core$Maybe$Just(order_)
 					});
 			case 3:
 				return _Utils_update(
 					options,
 					{
-						bw: $elm$core$Maybe$Just(pull_)
+						bp: $elm$core$Maybe$Just(order_)
 					});
 			default:
+				return _Utils_update(
+					options,
+					{
+						bs: $elm$core$Maybe$Just(order_)
+					});
+		}
+	});
+var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$applyColPull = F2(
+	function (pull_, options) {
+		var _v0 = pull_.c$;
+		switch (_v0) {
+			case 0:
 				return _Utils_update(
 					options,
 					{
 						bz: $elm$core$Maybe$Just(pull_)
 					});
-		}
-	});
-var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$applyColPush = F2(
-	function (push_, options) {
-		var _v0 = push_.c0;
-		switch (_v0) {
-			case 0:
-				return _Utils_update(
-					options,
-					{
-						bF: $elm$core$Maybe$Just(push_)
-					});
 			case 1:
 				return _Utils_update(
 					options,
 					{
-						bD: $elm$core$Maybe$Just(push_)
+						bx: $elm$core$Maybe$Just(pull_)
 					});
 			case 2:
 				return _Utils_update(
 					options,
 					{
-						bC: $elm$core$Maybe$Just(push_)
+						bw: $elm$core$Maybe$Just(pull_)
 					});
 			case 3:
 				return _Utils_update(
 					options,
 					{
-						bB: $elm$core$Maybe$Just(push_)
+						bv: $elm$core$Maybe$Just(pull_)
 					});
 			default:
+				return _Utils_update(
+					options,
+					{
+						by: $elm$core$Maybe$Just(pull_)
+					});
+		}
+	});
+var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$applyColPush = F2(
+	function (push_, options) {
+		var _v0 = push_.c$;
+		switch (_v0) {
+			case 0:
 				return _Utils_update(
 					options,
 					{
 						bE: $elm$core$Maybe$Just(push_)
 					});
-		}
-	});
-var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$applyColWidth = F2(
-	function (width_, options) {
-		var _v0 = width_.c0;
-		switch (_v0) {
-			case 0:
-				return _Utils_update(
-					options,
-					{
-						aA: $elm$core$Maybe$Just(width_)
-					});
 			case 1:
 				return _Utils_update(
 					options,
 					{
-						ay: $elm$core$Maybe$Just(width_)
+						bC: $elm$core$Maybe$Just(push_)
 					});
 			case 2:
 				return _Utils_update(
 					options,
 					{
-						ax: $elm$core$Maybe$Just(width_)
+						bB: $elm$core$Maybe$Just(push_)
 					});
 			case 3:
 				return _Utils_update(
 					options,
 					{
-						aw: $elm$core$Maybe$Just(width_)
+						bA: $elm$core$Maybe$Just(push_)
 					});
 			default:
 				return _Utils_update(
 					options,
 					{
+						bD: $elm$core$Maybe$Just(push_)
+					});
+		}
+	});
+var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$applyColWidth = F2(
+	function (width_, options) {
+		var _v0 = width_.c$;
+		switch (_v0) {
+			case 0:
+				return _Utils_update(
+					options,
+					{
 						az: $elm$core$Maybe$Just(width_)
+					});
+			case 1:
+				return _Utils_update(
+					options,
+					{
+						ax: $elm$core$Maybe$Just(width_)
+					});
+			case 2:
+				return _Utils_update(
+					options,
+					{
+						aw: $elm$core$Maybe$Just(width_)
+					});
+			case 3:
+				return _Utils_update(
+					options,
+					{
+						av: $elm$core$Maybe$Just(width_)
+					});
+			default:
+				return _Utils_update(
+					options,
+					{
+						ay: $elm$core$Maybe$Just(width_)
 					});
 		}
 	});
@@ -8465,7 +8845,7 @@ var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$applyColOption = F2(
 				return _Utils_update(
 					options,
 					{
-						aN: _Utils_ap(options.aN, attrs)
+						aM: _Utils_ap(options.aM, attrs)
 					});
 			case 0:
 				var width_ = modifier.a;
@@ -8490,7 +8870,7 @@ var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$applyColOption = F2(
 				return _Utils_update(
 					options,
 					{
-						bO: $elm$core$Maybe$Just(align)
+						bN: $elm$core$Maybe$Just(align)
 					});
 		}
 	});
@@ -8527,8 +8907,8 @@ var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$columnCountOption = function (
 	}
 };
 var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$colWidthClass = function (_v0) {
-	var columnCount = _v0.cu;
-	var screenSize = _v0.c0;
+	var columnCount = _v0.ct;
+	var screenSize = _v0.c$;
 	return $elm$html$Html$Attributes$class(
 		'col' + (A2(
 			$elm$core$Maybe$withDefault,
@@ -8557,7 +8937,7 @@ var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$colWidthsToAttributes = functi
 		$elm$core$Basics$identity,
 		A2($elm$core$List$map, width_, widths));
 };
-var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$defaultColOptions = {aF: $elm$core$Maybe$Nothing, aG: $elm$core$Maybe$Nothing, aH: $elm$core$Maybe$Nothing, aI: $elm$core$Maybe$Nothing, aJ: $elm$core$Maybe$Nothing, aN: _List_Nil, be: $elm$core$Maybe$Nothing, bf: $elm$core$Maybe$Nothing, bg: $elm$core$Maybe$Nothing, bi: $elm$core$Maybe$Nothing, bj: $elm$core$Maybe$Nothing, bq: $elm$core$Maybe$Nothing, br: $elm$core$Maybe$Nothing, bs: $elm$core$Maybe$Nothing, bt: $elm$core$Maybe$Nothing, bu: $elm$core$Maybe$Nothing, bw: $elm$core$Maybe$Nothing, bx: $elm$core$Maybe$Nothing, by: $elm$core$Maybe$Nothing, bz: $elm$core$Maybe$Nothing, bA: $elm$core$Maybe$Nothing, bB: $elm$core$Maybe$Nothing, bC: $elm$core$Maybe$Nothing, bD: $elm$core$Maybe$Nothing, bE: $elm$core$Maybe$Nothing, bF: $elm$core$Maybe$Nothing, bO: $elm$core$Maybe$Nothing, aw: $elm$core$Maybe$Nothing, ax: $elm$core$Maybe$Nothing, ay: $elm$core$Maybe$Nothing, az: $elm$core$Maybe$Nothing, aA: $elm$core$Maybe$Nothing};
+var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$defaultColOptions = {aE: $elm$core$Maybe$Nothing, aF: $elm$core$Maybe$Nothing, aG: $elm$core$Maybe$Nothing, aH: $elm$core$Maybe$Nothing, aI: $elm$core$Maybe$Nothing, aM: _List_Nil, bd: $elm$core$Maybe$Nothing, be: $elm$core$Maybe$Nothing, bf: $elm$core$Maybe$Nothing, bh: $elm$core$Maybe$Nothing, bi: $elm$core$Maybe$Nothing, bp: $elm$core$Maybe$Nothing, bq: $elm$core$Maybe$Nothing, br: $elm$core$Maybe$Nothing, bs: $elm$core$Maybe$Nothing, bt: $elm$core$Maybe$Nothing, bv: $elm$core$Maybe$Nothing, bw: $elm$core$Maybe$Nothing, bx: $elm$core$Maybe$Nothing, by: $elm$core$Maybe$Nothing, bz: $elm$core$Maybe$Nothing, bA: $elm$core$Maybe$Nothing, bB: $elm$core$Maybe$Nothing, bC: $elm$core$Maybe$Nothing, bD: $elm$core$Maybe$Nothing, bE: $elm$core$Maybe$Nothing, bN: $elm$core$Maybe$Nothing, av: $elm$core$Maybe$Nothing, aw: $elm$core$Maybe$Nothing, ax: $elm$core$Maybe$Nothing, ay: $elm$core$Maybe$Nothing, az: $elm$core$Maybe$Nothing};
 var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$offsetCountOption = function (size) {
 	switch (size) {
 		case 0:
@@ -8596,8 +8976,8 @@ var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$screenSizeToPartialString = fu
 	}
 };
 var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$offsetClass = function (_v0) {
-	var offsetCount = _v0.cP;
-	var screenSize = _v0.c0;
+	var offsetCount = _v0.cO;
+	var screenSize = _v0.c$;
 	return $elm$html$Html$Attributes$class(
 		'offset' + ($rundis$elm_bootstrap$Bootstrap$Grid$Internal$screenSizeToPartialString(screenSize) + $rundis$elm_bootstrap$Bootstrap$Grid$Internal$offsetCountOption(offsetCount)));
 };
@@ -8646,7 +9026,7 @@ var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$orderToAttributes = function (
 	var order_ = function (m) {
 		if (!m.$) {
 			var moveCount = m.a.V;
-			var screenSize = m.a.c0;
+			var screenSize = m.a.c$;
 			return $elm$core$Maybe$Just(
 				$elm$html$Html$Attributes$class(
 					'order' + ($rundis$elm_bootstrap$Bootstrap$Grid$Internal$screenSizeToPartialString(screenSize) + $rundis$elm_bootstrap$Bootstrap$Grid$Internal$orderColOption(moveCount))));
@@ -8693,7 +9073,7 @@ var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$pullsToAttributes = function (
 	var pull_ = function (m) {
 		if (!m.$) {
 			var moveCount = m.a.V;
-			var screenSize = m.a.c0;
+			var screenSize = m.a.c$;
 			return $elm$core$Maybe$Just(
 				$elm$html$Html$Attributes$class(
 					'pull' + ($rundis$elm_bootstrap$Bootstrap$Grid$Internal$screenSizeToPartialString(screenSize) + $rundis$elm_bootstrap$Bootstrap$Grid$Internal$moveCountOption(moveCount))));
@@ -8710,7 +9090,7 @@ var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$pushesToAttributes = function 
 	var push_ = function (m) {
 		if (!m.$) {
 			var moveCount = m.a.V;
-			var screenSize = m.a.c0;
+			var screenSize = m.a.c$;
 			return $elm$core$Maybe$Just(
 				$elm$html$Html$Attributes$class(
 					'push' + ($rundis$elm_bootstrap$Bootstrap$Grid$Internal$screenSizeToPartialString(screenSize) + $rundis$elm_bootstrap$Bootstrap$Grid$Internal$moveCountOption(moveCount))));
@@ -8734,8 +9114,8 @@ var $rundis$elm_bootstrap$Bootstrap$Internal$Text$textAlignDirOption = function 
 	}
 };
 var $rundis$elm_bootstrap$Bootstrap$Internal$Text$textAlignClass = function (_v0) {
-	var size = _v0.bM;
-	var dir = _v0.cw;
+	var size = _v0.bL;
+	var dir = _v0.cv;
 	return $elm$html$Html$Attributes$class(
 		'text' + (A2(
 			$elm$core$Maybe$withDefault,
@@ -8759,8 +9139,8 @@ var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$verticalAlignOption = function
 };
 var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$vAlignClass = F2(
 	function (prefix, _v0) {
-		var screenSize = _v0.c0;
-		var align = _v0.cp;
+		var screenSize = _v0.c$;
+		var align = _v0.co;
 		return $elm$html$Html$Attributes$class(
 			_Utils_ap(
 				prefix,
@@ -8796,43 +9176,43 @@ var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$colAttributes = function (modi
 			$elm$core$List$filterMap,
 			$elm$core$Basics$identity,
 			_List_fromArray(
-				[options.aA, options.ay, options.ax, options.aw, options.az])));
+				[options.az, options.ax, options.aw, options.av, options.ay])));
 	return _Utils_ap(
 		$rundis$elm_bootstrap$Bootstrap$Grid$Internal$colWidthsToAttributes(
 			_List_fromArray(
 				[
 					shouldAddDefaultXs ? $elm$core$Maybe$Just(
-					A2($rundis$elm_bootstrap$Bootstrap$Grid$Internal$Width, 0, 0)) : options.aA,
-					options.ay,
+					A2($rundis$elm_bootstrap$Bootstrap$Grid$Internal$Width, 0, 0)) : options.az,
 					options.ax,
 					options.aw,
-					options.az
+					options.av,
+					options.ay
 				])),
 		_Utils_ap(
 			$rundis$elm_bootstrap$Bootstrap$Grid$Internal$offsetsToAttributes(
 				_List_fromArray(
-					[options.bj, options.bg, options.bf, options.be, options.bi])),
+					[options.bi, options.bf, options.be, options.bd, options.bh])),
 			_Utils_ap(
 				$rundis$elm_bootstrap$Bootstrap$Grid$Internal$pullsToAttributes(
 					_List_fromArray(
-						[options.bA, options.by, options.bx, options.bw, options.bz])),
+						[options.bz, options.bx, options.bw, options.bv, options.by])),
 				_Utils_ap(
 					$rundis$elm_bootstrap$Bootstrap$Grid$Internal$pushesToAttributes(
 						_List_fromArray(
-							[options.bF, options.bD, options.bC, options.bB, options.bE])),
+							[options.bE, options.bC, options.bB, options.bA, options.bD])),
 					_Utils_ap(
 						$rundis$elm_bootstrap$Bootstrap$Grid$Internal$orderToAttributes(
 							_List_fromArray(
-								[options.bu, options.bs, options.br, options.bq, options.bt])),
+								[options.bt, options.br, options.bq, options.bp, options.bs])),
 						_Utils_ap(
 							A2(
 								$rundis$elm_bootstrap$Bootstrap$Grid$Internal$vAlignsToAttributes,
 								'align-self-',
 								_List_fromArray(
-									[options.aJ, options.aH, options.aG, options.aF, options.aI])),
+									[options.aI, options.aG, options.aF, options.aE, options.aH])),
 							_Utils_ap(
 								function () {
-									var _v0 = options.bO;
+									var _v0 = options.bN;
 									if (!_v0.$) {
 										var a = _v0.a;
 										return _List_fromArray(
@@ -8843,12 +9223,12 @@ var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$colAttributes = function (modi
 										return _List_Nil;
 									}
 								}(),
-								options.aN)))))));
+								options.aM)))))));
 };
 var $rundis$elm_bootstrap$Bootstrap$Form$renderCol = function (_v0) {
-	var children = _v0.ct;
-	var options = _v0.dv;
-	var elemFn = _v0.cx;
+	var children = _v0.cs;
+	var options = _v0.du;
+	var elemFn = _v0.cw;
 	return A2(
 		elemFn,
 		$rundis$elm_bootstrap$Bootstrap$Grid$Internal$colAttributes(options),
@@ -8856,73 +9236,73 @@ var $rundis$elm_bootstrap$Bootstrap$Form$renderCol = function (_v0) {
 };
 var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$applyRowHAlign = F2(
 	function (align, options) {
-		var _v0 = align.c0;
+		var _v0 = align.c$;
 		switch (_v0) {
 			case 0:
-				return _Utils_update(
-					options,
-					{
-						a4: $elm$core$Maybe$Just(align)
-					});
-			case 1:
-				return _Utils_update(
-					options,
-					{
-						a2: $elm$core$Maybe$Just(align)
-					});
-			case 2:
-				return _Utils_update(
-					options,
-					{
-						a1: $elm$core$Maybe$Just(align)
-					});
-			case 3:
-				return _Utils_update(
-					options,
-					{
-						a0: $elm$core$Maybe$Just(align)
-					});
-			default:
 				return _Utils_update(
 					options,
 					{
 						a3: $elm$core$Maybe$Just(align)
 					});
-		}
-	});
-var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$applyRowVAlign = F2(
-	function (align_, options) {
-		var _v0 = align_.c0;
-		switch (_v0) {
-			case 0:
-				return _Utils_update(
-					options,
-					{
-						bX: $elm$core$Maybe$Just(align_)
-					});
 			case 1:
 				return _Utils_update(
 					options,
 					{
-						bV: $elm$core$Maybe$Just(align_)
+						a1: $elm$core$Maybe$Just(align)
 					});
 			case 2:
 				return _Utils_update(
 					options,
 					{
-						bU: $elm$core$Maybe$Just(align_)
+						a0: $elm$core$Maybe$Just(align)
 					});
 			case 3:
 				return _Utils_update(
 					options,
 					{
-						bT: $elm$core$Maybe$Just(align_)
+						a$: $elm$core$Maybe$Just(align)
 					});
 			default:
 				return _Utils_update(
 					options,
 					{
+						a2: $elm$core$Maybe$Just(align)
+					});
+		}
+	});
+var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$applyRowVAlign = F2(
+	function (align_, options) {
+		var _v0 = align_.c$;
+		switch (_v0) {
+			case 0:
+				return _Utils_update(
+					options,
+					{
 						bW: $elm$core$Maybe$Just(align_)
+					});
+			case 1:
+				return _Utils_update(
+					options,
+					{
+						bU: $elm$core$Maybe$Just(align_)
+					});
+			case 2:
+				return _Utils_update(
+					options,
+					{
+						bT: $elm$core$Maybe$Just(align_)
+					});
+			case 3:
+				return _Utils_update(
+					options,
+					{
+						bS: $elm$core$Maybe$Just(align_)
+					});
+			default:
+				return _Utils_update(
+					options,
+					{
+						bV: $elm$core$Maybe$Just(align_)
 					});
 		}
 	});
@@ -8934,7 +9314,7 @@ var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$applyRowOption = F2(
 				return _Utils_update(
 					options,
 					{
-						aN: _Utils_ap(options.aN, attrs)
+						aM: _Utils_ap(options.aM, attrs)
 					});
 			case 0:
 				var align = modifier.a;
@@ -8944,7 +9324,7 @@ var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$applyRowOption = F2(
 				return A2($rundis$elm_bootstrap$Bootstrap$Grid$Internal$applyRowHAlign, align, options);
 		}
 	});
-var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$defaultRowOptions = {aN: _List_Nil, a0: $elm$core$Maybe$Nothing, a1: $elm$core$Maybe$Nothing, a2: $elm$core$Maybe$Nothing, a3: $elm$core$Maybe$Nothing, a4: $elm$core$Maybe$Nothing, bT: $elm$core$Maybe$Nothing, bU: $elm$core$Maybe$Nothing, bV: $elm$core$Maybe$Nothing, bW: $elm$core$Maybe$Nothing, bX: $elm$core$Maybe$Nothing};
+var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$defaultRowOptions = {aM: _List_Nil, a$: $elm$core$Maybe$Nothing, a0: $elm$core$Maybe$Nothing, a1: $elm$core$Maybe$Nothing, a2: $elm$core$Maybe$Nothing, a3: $elm$core$Maybe$Nothing, bS: $elm$core$Maybe$Nothing, bT: $elm$core$Maybe$Nothing, bU: $elm$core$Maybe$Nothing, bV: $elm$core$Maybe$Nothing, bW: $elm$core$Maybe$Nothing};
 var $rundis$elm_bootstrap$Bootstrap$General$Internal$horizontalAlignOption = function (align) {
 	switch (align) {
 		case 0:
@@ -8960,8 +9340,8 @@ var $rundis$elm_bootstrap$Bootstrap$General$Internal$horizontalAlignOption = fun
 	}
 };
 var $rundis$elm_bootstrap$Bootstrap$General$Internal$hAlignClass = function (_v0) {
-	var screenSize = _v0.c0;
-	var align = _v0.cp;
+	var screenSize = _v0.c$;
+	var align = _v0.co;
 	return $elm$html$Html$Attributes$class(
 		'justify-content-' + (A2(
 			$elm$core$Maybe$withDefault,
@@ -8994,12 +9374,12 @@ var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$rowAttributes = function (modi
 				$rundis$elm_bootstrap$Bootstrap$Grid$Internal$vAlignsToAttributes,
 				'align-items-',
 				_List_fromArray(
-					[options.bX, options.bV, options.bU, options.bT, options.bW])),
+					[options.bW, options.bU, options.bT, options.bS, options.bV])),
 			_Utils_ap(
 				$rundis$elm_bootstrap$Bootstrap$Grid$Internal$hAlignsToAttributes(
 					_List_fromArray(
-						[options.a4, options.a2, options.a1, options.a0, options.a3])),
-				options.aN)));
+						[options.a3, options.a1, options.a0, options.a$, options.a2])),
+				options.aM)));
 };
 var $rundis$elm_bootstrap$Bootstrap$Form$row = F2(
 	function (options, cols) {
@@ -9014,7 +9394,7 @@ var $rundis$elm_bootstrap$Bootstrap$Form$row = F2(
 var $rundis$elm_bootstrap$Bootstrap$Form$Select$Select = $elm$core$Basics$identity;
 var $rundis$elm_bootstrap$Bootstrap$Form$Select$create = F2(
 	function (options, items) {
-		return {cH: items, dv: options};
+		return {cG: items, du: options};
 	});
 var $elm$html$Html$select = _VirtualDom_node('select');
 var $rundis$elm_bootstrap$Bootstrap$Form$Select$applyModifier = F2(
@@ -9025,7 +9405,7 @@ var $rundis$elm_bootstrap$Bootstrap$Form$Select$applyModifier = F2(
 				return _Utils_update(
 					options,
 					{
-						bM: $elm$core$Maybe$Just(size_)
+						bL: $elm$core$Maybe$Just(size_)
 					});
 			case 1:
 				var id_ = modifier.a;
@@ -9042,27 +9422,27 @@ var $rundis$elm_bootstrap$Bootstrap$Form$Select$applyModifier = F2(
 				var val = modifier.a;
 				return _Utils_update(
 					options,
-					{a_: val});
+					{aZ: val});
 			case 4:
 				var onChange_ = modifier.a;
 				return _Utils_update(
 					options,
 					{
-						bk: $elm$core$Maybe$Just(onChange_)
+						bj: $elm$core$Maybe$Just(onChange_)
 					});
 			case 5:
 				var validation_ = modifier.a;
 				return _Utils_update(
 					options,
 					{
-						bY: $elm$core$Maybe$Just(validation_)
+						bX: $elm$core$Maybe$Just(validation_)
 					});
 			default:
 				var attrs_ = modifier.a;
 				return _Utils_update(
 					options,
 					{
-						aN: _Utils_ap(options.aN, attrs_)
+						aM: _Utils_ap(options.aM, attrs_)
 					});
 		}
 	});
@@ -9082,7 +9462,7 @@ var $rundis$elm_bootstrap$Bootstrap$Form$Select$customEventOnChange = function (
 		'change',
 		A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetValue));
 };
-var $rundis$elm_bootstrap$Bootstrap$Form$Select$defaultOptions = {aN: _List_Nil, k: false, a_: false, ag: $elm$core$Maybe$Nothing, bk: $elm$core$Maybe$Nothing, bM: $elm$core$Maybe$Nothing, bY: $elm$core$Maybe$Nothing};
+var $rundis$elm_bootstrap$Bootstrap$Form$Select$defaultOptions = {aM: _List_Nil, k: false, aZ: false, ag: $elm$core$Maybe$Nothing, bj: $elm$core$Maybe$Nothing, bL: $elm$core$Maybe$Nothing, bX: $elm$core$Maybe$Nothing};
 var $rundis$elm_bootstrap$Bootstrap$Form$Select$sizeAttribute = F2(
 	function (isCustom, size_) {
 		var prefix = isCustom ? 'custom-select-' : 'form-control-';
@@ -9109,7 +9489,7 @@ var $rundis$elm_bootstrap$Bootstrap$Form$Select$toAttributes = function (modifie
 						_Utils_Tuple2('form-control', !options.k),
 						_Utils_Tuple2('custom-select', options.k)
 					])),
-				$elm$html$Html$Attributes$disabled(options.a_)
+				$elm$html$Html$Attributes$disabled(options.aZ)
 			]),
 		_Utils_ap(
 			A2(
@@ -9121,15 +9501,15 @@ var $rundis$elm_bootstrap$Bootstrap$Form$Select$toAttributes = function (modifie
 						A2(
 						$elm$core$Maybe$andThen,
 						$rundis$elm_bootstrap$Bootstrap$Form$Select$sizeAttribute(options.k),
-						options.bM),
-						A2($elm$core$Maybe$map, $rundis$elm_bootstrap$Bootstrap$Form$Select$customEventOnChange, options.bk),
-						A2($elm$core$Maybe$map, $rundis$elm_bootstrap$Bootstrap$Form$Select$validationAttribute, options.bY)
+						options.bL),
+						A2($elm$core$Maybe$map, $rundis$elm_bootstrap$Bootstrap$Form$Select$customEventOnChange, options.bj),
+						A2($elm$core$Maybe$map, $rundis$elm_bootstrap$Bootstrap$Form$Select$validationAttribute, options.bX)
 					])),
-			options.aN));
+			options.aM));
 };
 var $rundis$elm_bootstrap$Bootstrap$Form$Select$view = function (_v0) {
-	var items = _v0.cH;
-	var options = _v0.dv;
+	var items = _v0.cG;
+	var options = _v0.du;
 	return A2(
 		$elm$html$Html$select,
 		$rundis$elm_bootstrap$Bootstrap$Form$Select$toAttributes(options),
@@ -9216,7 +9596,7 @@ var $author$project$Page$Root$variantList = function (model) {
 									]))
 							]));
 				},
-				exp.dE));
+				exp.dD));
 	}
 };
 var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$ColAuto = 13;
@@ -9465,25 +9845,25 @@ var $author$project$Main$view = function (model) {
 	if (model.$ === 1) {
 		var rootModel = model.a;
 		return {
-			cq: _List_fromArray(
+			cp: _List_fromArray(
 				[
 					A2(
 					$author$project$Common$Shell$view,
 					$author$project$Main$GotRootPgMsg,
 					$author$project$Page$Root$view(rootModel))
 				]),
-			c3: title
+			c2: title
 		};
 	} else {
 		var nfModel = model.a;
 		return {
-			cq: _List_fromArray(
+			cp: _List_fromArray(
 				[$author$project$Page$NotFound$view]),
-			c3: title
+			c2: title
 		};
 	}
 };
 var $author$project$Main$main = $elm$browser$Browser$application(
-	{dp: $author$project$Main$init, ds: $author$project$Main$ChangedUrl, dt: $author$project$Main$ClickedLink, dA: $author$project$Main$subscriptions, dD: $author$project$Main$update, dF: $author$project$Main$view});
+	{$7: $author$project$Main$init, dr: $author$project$Main$ChangedUrl, ds: $author$project$Main$ClickedLink, dz: $author$project$Main$subscriptions, dC: $author$project$Main$update, dE: $author$project$Main$view});
 _Platform_export({'Main':{'init':$author$project$Main$main(
 	$elm$json$Json$Decode$succeed(0))(0)}});}(this));

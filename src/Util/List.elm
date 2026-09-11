@@ -1,30 +1,35 @@
-module Util.List exposing (..)
+module Util.List exposing (shuffle, unique)
 
-import Random exposing (Seed)
+import Random exposing (Generator)
 import Set
 
 
-toUniqueItems : List comparable -> List comparable
-toUniqueItems list =
-    Set.fromList list
-        |> Set.toList
-
-
-shacke : Seed -> List a -> List a
-shacke initialSeed items =
+{-| Removes duplicates keeping the first occurrence of each item.
+-}
+unique : List comparable -> List comparable
+unique list =
     List.foldl
-        (\item ( list, seed ) ->
-            let
-                ( weight, nextSeed ) =
-                    Random.step (Random.int 0 Random.maxInt) seed
-            in
-            ( ( item, weight ) :: list, nextSeed )
+        (\item ( seen, acc ) ->
+            if Set.member item seen then
+                ( seen, acc )
+
+            else
+                ( Set.insert item seen, item :: acc )
         )
-        ( [], initialSeed )
-        items
-        -- get list
-        |> Tuple.first
-        -- then sort by weight
-        |> List.sortBy Tuple.second
-        -- then get original values
-        |> List.map Tuple.first
+        ( Set.empty, [] )
+        list
+        |> Tuple.second
+        |> List.reverse
+
+
+shuffle : List a -> Generator (List a)
+shuffle items =
+    Random.list (List.length items) (Random.float 0 1)
+        |> Random.map
+            (\weights ->
+                List.map2 Tuple.pair weights items
+                    -- sort by weight
+                    |> List.sortBy Tuple.first
+                    -- then get original values
+                    |> List.map Tuple.second
+            )

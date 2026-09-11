@@ -29,7 +29,6 @@ import Random
 import Task
 import Time
 import Url exposing (Url)
-import Util.List
 
 
 
@@ -39,7 +38,6 @@ import Util.List
 type alias RootPgModel =
     { route : Route.RouteModel
     , timeMark : Int
-    , timeMarkSeed : Random.Seed
     , level : Level
     , operation : Operation
     , expressions : List Expression
@@ -53,7 +51,6 @@ init : Url -> Key -> ( RootPgModel, Cmd RootPgMsg )
 init _ key =
     ( { route = Route.init key
       , timeMark = 0
-      , timeMarkSeed = Random.initialSeed 0
       , level = Level1
       , operation = Addition
       , expressions = []
@@ -85,12 +82,7 @@ update : RootPgMsg -> RootPgModel -> ( RootPgModel, Cmd RootPgMsg )
 update msg model =
     case msg of
         GotTime time ->
-            ( { model
-                | timeMark = time
-                , timeMarkSeed = Random.initialSeed time
-              }
-            , Cmd.none
-            )
+            ( { model | timeMark = time }, Cmd.none )
 
         SelectedLevel level ->
             ( { model | level = ExpLevel.fromString level }, Cmd.none )
@@ -150,37 +142,13 @@ update msg model =
 
         NextExpression ->
             let
-                mbCurrExp =
+                mbNextExp =
                     nextExpression model.currExpression model.expressions
-
-                mbNewCurrExp =
-                    case mbCurrExp of
-                        Just currExp ->
-                            Just
-                                { currExp
-                                    | variants =
-                                        Util.List.shacke model.timeMarkSeed currExp.variants
-                                }
-
-                        Nothing ->
-                            mbCurrExp
-
-                answered =
-                    case mbNewCurrExp of
-                        Nothing ->
-                            True
-
-                        Just _ ->
-                            False
-
-                ( currExpression, expressions ) =
-                    updateCurrExp mbCurrExp mbNewCurrExp model.expressions
             in
             ( { model
-                | currExpression = currExpression
-                , expressions = expressions
+                | currExpression = mbNextExp
                 , answeringIsDisabled = False
-                , answered = answered
+                , answered = mbNextExp == Nothing
               }
             , getTime
             )
@@ -229,7 +197,7 @@ nextExpression mbCurrExp expressions =
 
 generateExpressions : RootPgModel -> Cmd RootPgMsg
 generateExpressions model =
-    generate model.timeMarkSeed model.level model.operation
+    generate model.level model.operation
         |> Random.list 10
         |> Random.map uniqueByArguments
         |> Random.generate NewExpressions
@@ -412,7 +380,7 @@ resultTable model =
                             []
                             [ Table.td [] [ idx |> (+) 1 |> String.fromInt |> text ]
                             , Table.td [] [ Just exp |> displayValue |> text ]
-                            , Table.td [] [ toFloat exp.spentTime / 1000 |> String.fromFloat |> text ]
+                            , Table.td [] [ secondsToTenths exp.spentTime |> text ]
                             ]
                 )
                 model.expressions
@@ -430,9 +398,7 @@ resultTable model =
                         , Table.td []
                             [ List.map (\exp -> exp.spentTime) model.expressions
                                 |> List.sum
-                                |> toFloat
-                                |> (*) 0.001
-                                |> String.fromFloat
+                                |> secondsToTenths
                                 |> text
                             ]
                         ]
@@ -450,6 +416,18 @@ resultTable model =
 
     else
         text ""
+
+
+{-| Milliseconds to seconds rounded to tenths, e.g. 1234 -> "1.2".
+Integer math avoids float artifacts like "1.2000000000000002".
+-}
+secondsToTenths : Int -> String
+secondsToTenths ms =
+    let
+        tenths =
+            round (toFloat ms / 100)
+    in
+    String.fromInt (tenths // 10) ++ "." ++ String.fromInt (modBy 10 tenths)
 
 
 withSuccessOption :
