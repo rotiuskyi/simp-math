@@ -1,4 +1,4 @@
-# simple-math-client
+# simp-math
 
 ## build
 ```
