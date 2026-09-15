@@ -5,8 +5,8 @@ import Browser.Navigation exposing (Key, load, pushUrl)
 import Common.Route as Route
 import Common.Shell as Shell
 import Html.Attributes exposing (href)
+import Page.Home
 import Page.NotFound
-import Page.Root
 import Url exposing (Url)
 
 
@@ -16,7 +16,7 @@ import Url exposing (Url)
 
 type Model
     = NotFound Page.NotFound.NotFoundPgModel
-    | Root Page.Root.RootPgModel
+    | Home Page.Home.HomePgModel
 
 
 init : () -> Url -> Key -> ( Model, Cmd Msg )
@@ -26,9 +26,9 @@ init _ url key =
             Page.NotFound.init key
                 |> withMapBy identity NotFound
 
-        Just Route.Root ->
-            Page.Root.init url key
-                |> withMapBy GotRootPgMsg Root
+        Just Route.Home ->
+            Page.Home.init url key
+                |> withMapBy GotHomePgMsg Home
 
 
 withMapBy : (a -> Msg) -> (b -> Model) -> ( b, Cmd a ) -> ( Model, Cmd Msg )
@@ -43,7 +43,7 @@ withMapBy toMsg toModel ( subModel, subCmd ) =
 type Msg
     = ChangedUrl Url
     | ClickedLink UrlRequest
-    | GotRootPgMsg Page.Root.RootPgMsg
+    | GotHomePgMsg Page.Home.HomePgMsg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -67,8 +67,8 @@ update msg model =
                 Browser.External href ->
                     ( model, load href )
 
-        ( GotRootPgMsg rootMsg, Root rootModel ) ->
-            Page.Root.update rootMsg rootModel |> withMapBy GotRootPgMsg Root
+        ( GotHomePgMsg homeMsg, Home homeModel ) ->
+            Page.Home.update homeMsg homeModel |> withMapBy GotHomePgMsg Home
 
         ( _, _ ) ->
             ( model, Cmd.none )
@@ -77,8 +77,8 @@ update msg model =
 toRouteModel : Model -> Route.RouteModel
 toRouteModel model =
     case model of
-        Root rootModel ->
-            rootModel.route
+        Home homeModel ->
+            homeModel.route
 
         NotFound nfModel ->
             nfModel
@@ -90,7 +90,7 @@ toRouteModel model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Page.Root.subscriptions model |> Sub.map GotRootPgMsg
+    Page.Home.subscriptions model |> Sub.map GotHomePgMsg
 
 
 
@@ -104,8 +104,8 @@ view model =
             "Simple Math"
     in
     case model of
-        Root rootModel ->
-            { title = title, body = [ Page.Root.view rootModel |> Shell.view GotRootPgMsg ] }
+        Home homeModel ->
+            { title = title, body = [ Page.Home.view homeModel |> Shell.view GotHomePgMsg ] }
 
         NotFound nfModel ->
             { title = title, body = [ Page.NotFound.view ] }

@@ -16,14 +16,14 @@ init key =
 
 
 type Route
-    = Root
+    = Home
 
 
 parser : Parser (Route -> a) a
 parser =
     oneOf
-        [ map Root top
-        , map Root (s "index.html")
+        [ map Home top
+        , map Home (s "index.html")
         ]
 
 

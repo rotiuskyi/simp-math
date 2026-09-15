@@ -1,4 +1,4 @@
-module Page.Root exposing (RootPgModel, RootPgMsg, init, subscriptions, update, view)
+module Page.Home exposing (HomePgModel, HomePgMsg, init, subscriptions, update, view)
 
 import Bootstrap.Button as Btn
 import Bootstrap.Form as Form
@@ -35,7 +35,7 @@ import Url exposing (Url)
 -- model
 
 
-type alias RootPgModel =
+type alias HomePgModel =
     { route : Route.RouteModel
     , timeMark : Int
     , level : Level
@@ -47,7 +47,7 @@ type alias RootPgModel =
     }
 
 
-init : Url -> Key -> ( RootPgModel, Cmd RootPgMsg )
+init : Url -> Key -> ( HomePgModel, Cmd HomePgMsg )
 init _ key =
     ( { route = Route.init key
       , timeMark = 0
@@ -66,7 +66,7 @@ init _ key =
 -- update
 
 
-type RootPgMsg
+type HomePgMsg
     = GotTime Int
     | SelectedLevel String
     | SelectedOperation String
@@ -78,7 +78,7 @@ type RootPgMsg
     | NextExpression
 
 
-update : RootPgMsg -> RootPgModel -> ( RootPgModel, Cmd RootPgMsg )
+update : HomePgMsg -> HomePgModel -> ( HomePgModel, Cmd HomePgMsg )
 update msg model =
     case msg of
         GotTime time ->
@@ -154,7 +154,7 @@ update msg model =
             )
 
 
-getTime : Cmd RootPgMsg
+getTime : Cmd HomePgMsg
 getTime =
     Time.now
         |> Task.map Time.posixToMillis
@@ -195,7 +195,7 @@ nextExpression mbCurrExp expressions =
             Nothing
 
 
-generateExpressions : RootPgModel -> Cmd RootPgMsg
+generateExpressions : HomePgModel -> Cmd HomePgMsg
 generateExpressions model =
     generate model.level model.operation
         |> Random.list 10
@@ -207,7 +207,7 @@ generateExpressions model =
 -- subscriptions
 
 
-subscriptions : a -> Sub RootPgMsg
+subscriptions : a -> Sub HomePgMsg
 subscriptions _ =
     Sub.none
 
@@ -216,7 +216,7 @@ subscriptions _ =
 -- view
 
 
-view : RootPgModel -> Html RootPgMsg
+view : HomePgModel -> Html HomePgMsg
 view model =
     Grid.container [ class "pt-3" ]
         [ div []
@@ -278,9 +278,9 @@ view model =
 
 
 renderWhenAnswering :
-    RootPgModel
-    -> List (Form.Col RootPgMsg)
-    -> (List (Form.Col RootPgMsg) -> Html.Html msg)
+    HomePgModel
+    -> List (Form.Col HomePgMsg)
+    -> (List (Form.Col HomePgMsg) -> Html.Html msg)
     -> Html.Html msg
 renderWhenAnswering model colOps toMsg =
     case model.currExpression of
@@ -291,7 +291,7 @@ renderWhenAnswering model colOps toMsg =
             toMsg colOps
 
 
-answering : RootPgModel -> Bool
+answering : HomePgModel -> Bool
 answering model =
     case model.currExpression of
         Nothing ->
@@ -301,7 +301,7 @@ answering model =
             True
 
 
-expressionInput : RootPgModel -> Html.Html RootPgMsg
+expressionInput : HomePgModel -> Html.Html HomePgMsg
 expressionInput model =
     let
         defaultOpts =
@@ -329,7 +329,7 @@ expressionInput model =
                 defaultInput
 
 
-variantList : RootPgModel -> Html RootPgMsg
+variantList : HomePgModel -> Html HomePgMsg
 variantList model =
     let
         list =
@@ -357,7 +357,7 @@ variantList model =
                 |> list
 
 
-resultTable : RootPgModel -> Html.Html msg
+resultTable : HomePgModel -> Html.Html msg
 resultTable model =
     let
         options =

@@ -5244,14 +5244,14 @@ var $elm$core$Task$perform = F2(
 			A2($elm$core$Task$map, toMessage, task));
 	});
 var $elm$browser$Browser$application = _Browser_application;
-var $author$project$Main$GotRootPgMsg = function (a) {
+var $author$project$Main$GotHomePgMsg = function (a) {
 	return {$: 2, a: a};
+};
+var $author$project$Main$Home = function (a) {
+	return {$: 1, a: a};
 };
 var $author$project$Main$NotFound = function (a) {
 	return {$: 0, a: a};
-};
-var $author$project$Main$Root = function (a) {
-	return {$: 1, a: a};
 };
 var $elm$url$Url$Parser$Parser = $elm$core$Basics$identity;
 var $elm$core$List$append = F2(
@@ -5915,7 +5915,7 @@ var $elm$url$Url$Parser$parse = F2(
 					url.cz,
 					$elm$core$Basics$identity)));
 	});
-var $author$project$Common$Route$Root = 0;
+var $author$project$Common$Route$Home = 0;
 var $elm$url$Url$Parser$mapState = F2(
 	function (func, _v0) {
 		var value = _v0.u;
@@ -6010,19 +6010,9 @@ var $author$project$Common$Route$fromUrl = function (url) {
 				])),
 		url);
 };
-var $author$project$Common$Route$init = function (key) {
-	return {cL: key};
-};
-var $elm$core$Platform$Cmd$batch = _Platform_batch;
-var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
-var $author$project$Page$NotFound$init = function (key) {
-	return _Utils_Tuple2(
-		$author$project$Common$Route$init(key),
-		$elm$core$Platform$Cmd$none);
-};
 var $author$project$Feature$ExpressionOperation$Addition = 0;
 var $author$project$Feature$ExpressionLevel$Level1 = 0;
-var $author$project$Page$Root$GotTime = function (a) {
+var $author$project$Page$Home$GotTime = function (a) {
 	return {$: 0, a: a};
 };
 var $elm$time$Time$Name = function (a) {
@@ -6043,11 +6033,14 @@ var $elm$time$Time$posixToMillis = function (_v0) {
 	var millis = _v0;
 	return millis;
 };
-var $author$project$Page$Root$getTime = A2(
+var $author$project$Page$Home$getTime = A2(
 	$elm$core$Task$perform,
-	$author$project$Page$Root$GotTime,
+	$author$project$Page$Home$GotTime,
 	A2($elm$core$Task$map, $elm$time$Time$posixToMillis, $elm$time$Time$now));
-var $author$project$Page$Root$init = F2(
+var $author$project$Common$Route$init = function (key) {
+	return {cL: key};
+};
+var $author$project$Page$Home$init = F2(
 	function (_v0, key) {
 		return _Utils_Tuple2(
 			{
@@ -6060,8 +6053,15 @@ var $author$project$Page$Root$init = F2(
 				dw: $author$project$Common$Route$init(key),
 				bO: 0
 			},
-			$author$project$Page$Root$getTime);
+			$author$project$Page$Home$getTime);
 	});
+var $elm$core$Platform$Cmd$batch = _Platform_batch;
+var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
+var $author$project$Page$NotFound$init = function (key) {
+	return _Utils_Tuple2(
+		$author$project$Common$Route$init(key),
+		$elm$core$Platform$Cmd$none);
+};
 var $elm$core$Platform$Cmd$map = _Platform_map;
 var $author$project$Main$withMapBy = F3(
 	function (toMsg, toModel, _v0) {
@@ -6084,29 +6084,29 @@ var $author$project$Main$init = F3(
 			var _v2 = _v1.a;
 			return A3(
 				$author$project$Main$withMapBy,
-				$author$project$Main$GotRootPgMsg,
-				$author$project$Main$Root,
-				A2($author$project$Page$Root$init, url, key));
+				$author$project$Main$GotHomePgMsg,
+				$author$project$Main$Home,
+				A2($author$project$Page$Home$init, url, key));
 		}
 	});
 var $elm$core$Platform$Sub$map = _Platform_map;
 var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
-var $author$project$Page$Root$subscriptions = function (_v0) {
+var $author$project$Page$Home$subscriptions = function (_v0) {
 	return $elm$core$Platform$Sub$none;
 };
 var $author$project$Main$subscriptions = function (model) {
 	return A2(
 		$elm$core$Platform$Sub$map,
-		$author$project$Main$GotRootPgMsg,
-		$author$project$Page$Root$subscriptions(model));
+		$author$project$Main$GotHomePgMsg,
+		$author$project$Page$Home$subscriptions(model));
 };
 var $elm$browser$Browser$Navigation$load = _Browser_load;
 var $elm$browser$Browser$Navigation$pushUrl = _Browser_pushUrl;
 var $author$project$Main$toRouteModel = function (model) {
 	if (model.$ === 1) {
-		var rootModel = model.a;
-		return rootModel.dw;
+		var homeModel = model.a;
+		return homeModel.dw;
 	} else {
 		var nfModel = model.a;
 		return nfModel;
@@ -6156,11 +6156,11 @@ var $elm$url$Url$toString = function (url) {
 					_Utils_ap(http, url.cB)),
 				url.cP)));
 };
-var $author$project$Page$Root$AnswerWithTime = F2(
+var $author$project$Page$Home$AnswerWithTime = F2(
 	function (a, b) {
 		return {$: 7, a: a, b: b};
 	});
-var $author$project$Page$Root$NextExpression = {$: 8};
+var $author$project$Page$Home$NextExpression = {$: 8};
 var $elm$core$Basics$always = F2(
 	function (a, _v0) {
 		return a;
@@ -6188,7 +6188,7 @@ var $author$project$Feature$ExpressionOperation$substractionSign = ' - ';
 var $author$project$Feature$ExpressionOperation$fromString = function (operation) {
 	return _Utils_eq(operation, $author$project$Feature$ExpressionOperation$additionSign) ? 0 : (_Utils_eq(operation, $author$project$Feature$ExpressionOperation$substractionSign) ? 1 : (_Utils_eq(operation, $author$project$Feature$ExpressionOperation$multiplicationSign) ? 2 : (_Utils_eq(operation, $author$project$Feature$ExpressionOperation$divisionSign) ? 3 : 0)));
 };
-var $author$project$Page$Root$NewExpressions = function (a) {
+var $author$project$Page$Home$NewExpressions = function (a) {
 	return {$: 4, a: a};
 };
 var $author$project$Feature$Expression$Expression = F5(
@@ -6922,10 +6922,10 @@ var $author$project$Feature$Expression$uniqueByArguments = function (exps) {
 			$elm$core$Dict$empty,
 			exps));
 };
-var $author$project$Page$Root$generateExpressions = function (model) {
+var $author$project$Page$Home$generateExpressions = function (model) {
 	return A2(
 		$elm$random$Random$generate,
-		$author$project$Page$Root$NewExpressions,
+		$author$project$Page$Home$NewExpressions,
 		A2(
 			$elm$random$Random$map,
 			$author$project$Feature$Expression$uniqueByArguments,
@@ -6943,7 +6943,7 @@ var $elm$core$List$head = function (list) {
 		return $elm$core$Maybe$Nothing;
 	}
 };
-var $author$project$Page$Root$nextExpression = F2(
+var $author$project$Page$Home$nextExpression = F2(
 	function (mbCurrExp, expressions) {
 		nextExpression:
 		while (true) {
@@ -6968,7 +6968,7 @@ var $author$project$Page$Root$nextExpression = F2(
 		}
 	});
 var $elm$core$Process$sleep = _Process_sleep;
-var $author$project$Page$Root$updateCurrExp = F3(
+var $author$project$Page$Home$updateCurrExp = F3(
 	function (mbOld, mbNew, exps) {
 		var _v0 = _Utils_Tuple2(mbOld, mbNew);
 		if ((!_v0.a.$) && (!_v0.b.$)) {
@@ -6986,7 +6986,7 @@ var $author$project$Page$Root$updateCurrExp = F3(
 			return _Utils_Tuple2(mbOld, exps);
 		}
 	});
-var $author$project$Page$Root$update = F2(
+var $author$project$Page$Home$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
 			case 0:
@@ -7017,7 +7017,7 @@ var $author$project$Page$Root$update = F2(
 			case 3:
 				return _Utils_Tuple2(
 					model,
-					$author$project$Page$Root$generateExpressions(model));
+					$author$project$Page$Home$generateExpressions(model));
 			case 4:
 				var exps = msg.a;
 				return _Utils_Tuple2(
@@ -7028,7 +7028,7 @@ var $author$project$Page$Root$update = F2(
 							g: $elm$core$List$head(exps),
 							s: exps
 						}),
-					$author$project$Page$Root$getTime);
+					$author$project$Page$Home$getTime);
 			case 5:
 				return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 			case 6:
@@ -7037,7 +7037,7 @@ var $author$project$Page$Root$update = F2(
 					model,
 					A2(
 						$elm$core$Task$perform,
-						$author$project$Page$Root$AnswerWithTime(answer),
+						$author$project$Page$Home$AnswerWithTime(answer),
 						A2($elm$core$Task$map, $elm$time$Time$posixToMillis, $elm$time$Time$now)));
 			case 7:
 				var answer = msg.a;
@@ -7057,7 +7057,7 @@ var $author$project$Page$Root$update = F2(
 						return model.g;
 					}
 				}();
-				var _v1 = A3($author$project$Page$Root$updateCurrExp, model.g, newCurrExp, model.s);
+				var _v1 = A3($author$project$Page$Home$updateCurrExp, model.g, newCurrExp, model.s);
 				var currExpression = _v1.a;
 				var expressions = _v1.b;
 				return _Utils_Tuple2(
@@ -7070,10 +7070,10 @@ var $author$project$Page$Root$update = F2(
 						A2(
 							$elm$core$Task$andThen,
 							$elm$core$Basics$always(
-								$elm$core$Task$succeed($author$project$Page$Root$NextExpression)),
+								$elm$core$Task$succeed($author$project$Page$Home$NextExpression)),
 							$elm$core$Process$sleep(1000))));
 			default:
-				var mbNextExp = A2($author$project$Page$Root$nextExpression, model.g, model.s);
+				var mbNextExp = A2($author$project$Page$Home$nextExpression, model.g, model.s);
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
@@ -7082,7 +7082,7 @@ var $author$project$Page$Root$update = F2(
 							_: false,
 							g: mbNextExp
 						}),
-					$author$project$Page$Root$getTime);
+					$author$project$Page$Home$getTime);
 		}
 	});
 var $author$project$Main$update = F2(
@@ -7108,13 +7108,13 @@ var $author$project$Main$update = F2(
 				}
 			default:
 				if (_v0.b.$ === 1) {
-					var rootMsg = _v0.a.a;
-					var rootModel = _v0.b.a;
+					var homeMsg = _v0.a.a;
+					var homeModel = _v0.b.a;
 					return A3(
 						$author$project$Main$withMapBy,
-						$author$project$Main$GotRootPgMsg,
-						$author$project$Main$Root,
-						A2($author$project$Page$Root$update, rootMsg, rootModel));
+						$author$project$Main$GotHomePgMsg,
+						$author$project$Main$Home,
+						A2($author$project$Page$Home$update, homeMsg, homeModel));
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
@@ -7229,21 +7229,14 @@ var $author$project$Common$Shell$view = F2(
 					$author$project$Common$Shell$footer
 				]));
 	});
-var $author$project$Page$NotFound$view = A2(
-	$elm$html$Html$div,
-	_List_Nil,
-	_List_fromArray(
-		[
-			$elm$html$Html$text('Not Found')
-		]));
-var $author$project$Page$Root$GenerateExpressions = {$: 3};
-var $author$project$Page$Root$SelectedLevel = function (a) {
+var $author$project$Page$Home$GenerateExpressions = {$: 3};
+var $author$project$Page$Home$SelectedLevel = function (a) {
 	return {$: 1, a: a};
 };
-var $author$project$Page$Root$SelectedOperation = function (a) {
+var $author$project$Page$Home$SelectedOperation = function (a) {
 	return {$: 2, a: a};
 };
-var $author$project$Page$Root$answering = function (model) {
+var $author$project$Page$Home$answering = function (model) {
 	var _v0 = model.g;
 	if (_v0.$ === 1) {
 		return false;
@@ -7463,7 +7456,7 @@ var $rundis$elm_bootstrap$Bootstrap$Grid$container = F2(
 				attributes),
 			children);
 	});
-var $author$project$Page$Root$TypedText = function (a) {
+var $author$project$Page$Home$TypedText = function (a) {
 	return {$: 5, a: a};
 };
 var $author$project$Feature$Expression$answeredAndCorrectly = function (mbExp) {
@@ -7802,7 +7795,7 @@ var $rundis$elm_bootstrap$Bootstrap$Form$Input$Value = function (a) {
 var $rundis$elm_bootstrap$Bootstrap$Form$Input$value = function (value_) {
 	return $rundis$elm_bootstrap$Bootstrap$Form$Input$Value(value_);
 };
-var $author$project$Page$Root$expressionInput = function (model) {
+var $author$project$Page$Home$expressionInput = function (model) {
 	var defaultOpts = _List_fromArray(
 		[
 			$rundis$elm_bootstrap$Bootstrap$Form$Input$large,
@@ -7813,7 +7806,7 @@ var $author$project$Page$Root$expressionInput = function (model) {
 				])),
 			$rundis$elm_bootstrap$Bootstrap$Form$Input$value(
 			$author$project$Feature$Expression$displayValue(model.g)),
-			$rundis$elm_bootstrap$Bootstrap$Form$Input$onInput($author$project$Page$Root$TypedText)
+			$rundis$elm_bootstrap$Bootstrap$Form$Input$onInput($author$project$Page$Home$TypedText)
 		]);
 	var successInput = $rundis$elm_bootstrap$Bootstrap$Form$Input$text(
 		A2($elm$core$List$cons, $rundis$elm_bootstrap$Bootstrap$Form$Input$success, defaultOpts));
@@ -7880,7 +7873,7 @@ var $rundis$elm_bootstrap$Bootstrap$Internal$Button$Roled = function (a) {
 };
 var $rundis$elm_bootstrap$Bootstrap$Button$primary = $rundis$elm_bootstrap$Bootstrap$Internal$Button$Coloring(
 	$rundis$elm_bootstrap$Bootstrap$Internal$Button$Roled(0));
-var $author$project$Page$Root$renderWhenAnswering = F3(
+var $author$project$Page$Home$renderWhenAnswering = F3(
 	function (model, colOps, toMsg) {
 		var _v0 = model.g;
 		if (_v0.$ === 1) {
@@ -7913,7 +7906,7 @@ var $rundis$elm_bootstrap$Bootstrap$Table$RoledRow = function (a) {
 };
 var $rundis$elm_bootstrap$Bootstrap$Table$rowInfo = $rundis$elm_bootstrap$Bootstrap$Table$RoledRow(
 	$rundis$elm_bootstrap$Bootstrap$Table$Roled(3));
-var $author$project$Page$Root$secondsToTenths = function (ms) {
+var $author$project$Page$Home$secondsToTenths = function (ms) {
 	var tenths = $elm$core$Basics$round(ms / 100);
 	return $elm$core$String$fromInt((tenths / 10) | 0) + ('.' + $elm$core$String$fromInt(
 		A2($elm$core$Basics$modBy, 10, tenths)));
@@ -8471,7 +8464,7 @@ var $rundis$elm_bootstrap$Bootstrap$Table$tr = F2(
 var $rundis$elm_bootstrap$Bootstrap$Internal$Role$Success = 2;
 var $rundis$elm_bootstrap$Bootstrap$Table$rowSuccess = $rundis$elm_bootstrap$Bootstrap$Table$RoledRow(
 	$rundis$elm_bootstrap$Bootstrap$Table$Roled(2));
-var $author$project$Page$Root$withSuccessOption = F4(
+var $author$project$Page$Home$withSuccessOption = F4(
 	function (exp, rowOps, cells, toMsg) {
 		return $author$project$Feature$Expression$answeredAndCorrectly(
 			$elm$core$Maybe$Just(exp)) ? A2(
@@ -8479,7 +8472,7 @@ var $author$project$Page$Root$withSuccessOption = F4(
 			A2($elm$core$List$cons, $rundis$elm_bootstrap$Bootstrap$Table$rowSuccess, rowOps),
 			cells) : A2(toMsg, rowOps, cells);
 	});
-var $author$project$Page$Root$resultTable = function (model) {
+var $author$project$Page$Home$resultTable = function (model) {
 	var thead = A2(
 		$rundis$elm_bootstrap$Bootstrap$Table$thead,
 		_List_Nil,
@@ -8519,7 +8512,7 @@ var $author$project$Page$Root$resultTable = function (model) {
 		F2(
 			function (idx, exp) {
 				return A4(
-					$author$project$Page$Root$withSuccessOption,
+					$author$project$Page$Home$withSuccessOption,
 					exp,
 					_List_Nil,
 					_List_fromArray(
@@ -8547,7 +8540,7 @@ var $author$project$Page$Root$resultTable = function (model) {
 							_List_fromArray(
 								[
 									$elm$html$Html$text(
-									$author$project$Page$Root$secondsToTenths(exp.dx))
+									$author$project$Page$Home$secondsToTenths(exp.dx))
 								]))
 						]),
 					$rundis$elm_bootstrap$Bootstrap$Table$tr);
@@ -8589,7 +8582,7 @@ var $author$project$Page$Root$resultTable = function (model) {
 							_List_fromArray(
 								[
 									$elm$html$Html$text(
-									$author$project$Page$Root$secondsToTenths(
+									$author$project$Page$Home$secondsToTenths(
 										$elm$core$List$sum(
 											A2(
 												$elm$core$List$map,
@@ -9526,7 +9519,7 @@ var $rundis$elm_bootstrap$Bootstrap$Form$Select$select = F2(
 		return $rundis$elm_bootstrap$Bootstrap$Form$Select$view(
 			A2($rundis$elm_bootstrap$Bootstrap$Form$Select$create, options, items));
 	});
-var $author$project$Page$Root$Answer = function (a) {
+var $author$project$Page$Home$Answer = function (a) {
 	return {$: 6, a: a};
 };
 var $rundis$elm_bootstrap$Bootstrap$Internal$Button$Disabled = function (a) {
@@ -9551,7 +9544,7 @@ var $rundis$elm_bootstrap$Bootstrap$Button$onClick = function (message) {
 			]));
 };
 var $elm$html$Html$ul = _VirtualDom_node('ul');
-var $author$project$Page$Root$variantList = function (model) {
+var $author$project$Page$Home$variantList = function (model) {
 	var list = $elm$html$Html$ul(
 		_List_fromArray(
 			[
@@ -9587,7 +9580,7 @@ var $author$project$Page$Root$variantList = function (model) {
 											])),
 										$rundis$elm_bootstrap$Bootstrap$Button$disabled(model._),
 										$rundis$elm_bootstrap$Bootstrap$Button$onClick(
-										$author$project$Page$Root$Answer(_var))
+										$author$project$Page$Home$Answer(_var))
 									]),
 								_List_fromArray(
 									[
@@ -9609,7 +9602,7 @@ var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$width = F2(
 			A2($rundis$elm_bootstrap$Bootstrap$Grid$Internal$Width, size, count));
 	});
 var $rundis$elm_bootstrap$Bootstrap$Grid$Col$xsAuto = A2($rundis$elm_bootstrap$Bootstrap$Grid$Internal$width, 0, 13);
-var $author$project$Page$Root$view = function (model) {
+var $author$project$Page$Home$view = function (model) {
 	return A2(
 		$rundis$elm_bootstrap$Bootstrap$Grid$container,
 		_List_fromArray(
@@ -9627,7 +9620,7 @@ var $author$project$Page$Root$view = function (model) {
 						$rundis$elm_bootstrap$Bootstrap$Form$form,
 						_List_fromArray(
 							[
-								$elm$html$Html$Events$onSubmit($author$project$Page$Root$GenerateExpressions)
+								$elm$html$Html$Events$onSubmit($author$project$Page$Home$GenerateExpressions)
 							]),
 						_List_fromArray(
 							[
@@ -9658,12 +9651,12 @@ var $author$project$Page$Root$view = function (model) {
 														$rundis$elm_bootstrap$Bootstrap$Form$Select$select,
 														_List_fromArray(
 															[
-																$rundis$elm_bootstrap$Bootstrap$Form$Select$onChange($author$project$Page$Root$SelectedLevel),
+																$rundis$elm_bootstrap$Bootstrap$Form$Select$onChange($author$project$Page$Home$SelectedLevel),
 																$rundis$elm_bootstrap$Bootstrap$Form$Select$attrs(
 																_List_fromArray(
 																	[
 																		$elm$html$Html$Attributes$disabled(
-																		$author$project$Page$Root$answering(model))
+																		$author$project$Page$Home$answering(model))
 																	]))
 															]),
 														_List_fromArray(
@@ -9708,12 +9701,12 @@ var $author$project$Page$Root$view = function (model) {
 														$rundis$elm_bootstrap$Bootstrap$Form$Select$select,
 														_List_fromArray(
 															[
-																$rundis$elm_bootstrap$Bootstrap$Form$Select$onChange($author$project$Page$Root$SelectedOperation),
+																$rundis$elm_bootstrap$Bootstrap$Form$Select$onChange($author$project$Page$Home$SelectedOperation),
 																$rundis$elm_bootstrap$Bootstrap$Form$Select$attrs(
 																_List_fromArray(
 																	[
 																		$elm$html$Html$Attributes$disabled(
-																		$author$project$Page$Root$answering(model))
+																		$author$project$Page$Home$answering(model))
 																	]))
 															]),
 														_List_fromArray(
@@ -9789,7 +9782,7 @@ var $author$project$Page$Root$view = function (model) {
 														_List_fromArray(
 															[
 																$elm$html$Html$Attributes$disabled(
-																$author$project$Page$Root$answering(model))
+																$author$project$Page$Home$answering(model))
 															]))
 													]),
 												_List_fromArray(
@@ -9799,7 +9792,7 @@ var $author$project$Page$Root$view = function (model) {
 											]))
 									])),
 								A3(
-								$author$project$Page$Root$renderWhenAnswering,
+								$author$project$Page$Home$renderWhenAnswering,
 								model,
 								_List_fromArray(
 									[
@@ -9808,12 +9801,12 @@ var $author$project$Page$Root$view = function (model) {
 										_List_Nil,
 										_List_fromArray(
 											[
-												$author$project$Page$Root$expressionInput(model)
+												$author$project$Page$Home$expressionInput(model)
 											]))
 									]),
 								$rundis$elm_bootstrap$Bootstrap$Form$row(_List_Nil)),
 								A3(
-								$author$project$Page$Root$renderWhenAnswering,
+								$author$project$Page$Home$renderWhenAnswering,
 								model,
 								_List_fromArray(
 									[
@@ -9823,7 +9816,7 @@ var $author$project$Page$Root$view = function (model) {
 											[$rundis$elm_bootstrap$Bootstrap$Grid$Col$xsAuto]),
 										_List_fromArray(
 											[
-												$author$project$Page$Root$variantList(model)
+												$author$project$Page$Home$variantList(model)
 											]))
 									]),
 								$rundis$elm_bootstrap$Bootstrap$Form$row(
@@ -9836,21 +9829,28 @@ var $author$project$Page$Root$view = function (model) {
 				_List_Nil,
 				_List_fromArray(
 					[
-						$author$project$Page$Root$resultTable(model)
+						$author$project$Page$Home$resultTable(model)
 					]))
 			]));
 };
+var $author$project$Page$NotFound$view = A2(
+	$elm$html$Html$div,
+	_List_Nil,
+	_List_fromArray(
+		[
+			$elm$html$Html$text('Not Found')
+		]));
 var $author$project$Main$view = function (model) {
 	var title = 'Simple Math';
 	if (model.$ === 1) {
-		var rootModel = model.a;
+		var homeModel = model.a;
 		return {
 			cp: _List_fromArray(
 				[
 					A2(
 					$author$project$Common$Shell$view,
-					$author$project$Main$GotRootPgMsg,
-					$author$project$Page$Root$view(rootModel))
+					$author$project$Main$GotHomePgMsg,
+					$author$project$Page$Home$view(homeModel))
 				]),
 			c2: title
 		};
